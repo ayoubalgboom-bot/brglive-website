@@ -12,7 +12,7 @@ const CONFIG = (() => {
     const PRODUCTION_PROXY_URL = 'https://brglive-proxy.onrender.com'; // Change this to your Render URL
 
     // Production GitHub Pages URL for matches.json
-    const PRODUCTION_MATCHES_URL = 'https://YOUR-USERNAME.github.io/brglive-website/matches.json'; // Change this
+    const PRODUCTION_MATCHES_URL = 'https://ayoubalgboom-bot.github.io/brglive-website/matches.json'; // Change this
 
     return {
         // Environment flag

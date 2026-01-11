@@ -85,7 +85,7 @@ const server = http.createServer(async (req, res) => {
     const allowedOrigins = [
         'http://localhost:3000',
         'http://127.0.0.1:3000',
-        'https://yourusername.github.io', // Replace with your GitHub Pages URL
+        'https://ayoubalgboom-bot.github.io', // Replace with your GitHub Pages URL
         '*' // Allow all for now, tighten in production
     ];
 

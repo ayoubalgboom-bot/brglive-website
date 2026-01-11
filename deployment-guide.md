@@ -147,11 +147,11 @@ Open PowerShell in your project folder (`New folder (2)`) and run:
 git init
 git add .
 git commit -m "Initial website deployment"
-git remote add origin https://github.com/YOUR-USERNAME/brglive-website.git
+git remote add origin https://github.com/ayoubalgboom-bot/brglive-website.git
 git push -u origin main
 ```
 
-> Replace `YOUR-USERNAME` with your GitHub username
+> Replace `ayoubalgboom-bot` with your GitHub username
 
 ## Step 6: Enable GitHub Pages
 
