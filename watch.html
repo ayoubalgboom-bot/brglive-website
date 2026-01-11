@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاهدة المباراة - brglive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container header-content">
+            <button id="menu-toggle" aria-current="false" aria-label="Menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <a href="index.html" class="logo">
+                <img src="assets/brglive_logo.png" alt="brglive logo" id="site-logo">
+            </a>
+
+            <button id="theme-toggle" aria-label="Toggle Dark Mode">
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="display:none;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Watch Content -->
+    <main class="container">
+
+        <main class="main-content">
+            <!-- New VS Banner -->
+            <div class="vs-banner">
+                <div class="vs-banner-overlay"></div>
+                <div class="match-header">
+                    <div class="team">
+                        <div class="team-logo" style="background:transparent; width:100px; height:100px;"></div>
+                        <h2>--</h2>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="team">
+                        <div class="team-logo" style="background:transparent; width:100px; height:100px;"></div>
+                        <h2>--</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html">الرئيسية</a> &gt; <span>مشاهدة المباراة</span>
+                </div>
+
+                <!-- Server Selection -->
+                <div class="server-list">
+                    <button class="server-btn main-server active" data-player="web">بث مباشر 1 (4K)</button>
+                    <button class="server-btn alt-server" data-player="web">بث مباشر 2</button>
+                    <button class="server-btn alt-server" data-player="web">بث احتياطي</button>
+                    <button class="server-btn" data-player="mpv" style="background:#e74c3c;">🎬 فتح في MPV</button>
+                    <button class="server-btn" style="background:#333;">&lt;/&gt; رمز التضمين</button>
+                </div>
+
+                <!-- Video Player -->
+                <div class="video-container">
+                    <div class="player-overlay" onclick="this.style.display='none'">
+                        <div class="unmute-btn">🔊 اضغط هنا للتشغيل</div>
+                    </div>
+                    <!-- Video Player injected by JS -->
+                </div>
+
+                <!-- MPV Instructions (hidden by default) -->
+                <div id="mpv-instructions"
+                    style="display:none; background:#2c3e50; color:#ecf0f1; padding:20px; border-radius:8px; margin-top:20px;">
+                    <h3 style="margin-top:0; color:#3498db;">📺 تشغيل في MPV.net</h3>
+                    <p>لتشغيل البث في MPV.net، انسخ الأمر التالي والصقه في PowerShell:</p>
+                    <div
+                        style="background:#34495e; padding:15px; border-radius:5px; margin:10px 0; font-family:monospace; font-size:12px; overflow-x:auto; position:relative;">
+                        <code id="mpv-command" style="color:#2ecc71; word-break:break-all;"></code>
+                        <button onclick="copyMpvCommand()"
+                            style="position:absolute; top:10px; left:10px; background:#3498db; color:white; border:none; padding:5px 15px; border-radius:4px; cursor:pointer;">نسخ</button>
+                    </div>
+                    <p style="margin-bottom:0; font-size:14px; color:#95a5a6;">💡 <strong>ملاحظة:</strong> MPV.net يدعم
+                        الرؤوس المخصصة ويعمل بشكل مثالي مع البث المحمي</p>
+                </div>
+
+                <!-- Match Details Grid (Deep Clone Icons) -->
+                <div class="match-details-grid">
+                    <div class="detail-card">
+                        <div class="detail-icon">🏆</div>
+                        <div class="meta-item">
+                            <span class="label">البطولة</span>
+                            <span class="value">--</span>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">🎤</div>
+                        <div class="meta-item">
+                            <span class="label">المعلق</span>
+                            <span class="value">--</span>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">📺</div>
+                        <div class="meta-item">
+                            <span class="label">القناة الناقلة</span>
+                            <span class="value">--</span>
+                        </div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-icon">🏟️</div>
+                        <div class="meta-item">
+                            <span class="label">الملعب</span>
+                            <span class="value">استاد الملك فهد</span>
+                        </div>
+                    </div>
+                    <!-- Hidden Score for now or displayed differently -->
+                    <div style="display:none;">
+                        <span class="score-large">--</span>
+                        <span class="status-badge">--</span>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="index.html">مباريات اليوم</a>
+                    <a href="#">مباريات الغد</a>
+                    <a href="#">اتصل بنا</a>
+                </div>
+                <p class="copyright">© 2026 brglive. جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
+
+        <script src="js/config.js"></script>
+        <script src="js/main.js"></script>
+        <script>
+            // Global variable for current stream
+            let currentStreamUrl = '';
+
+            // Function to copy MPV command
+            function copyMpvCommand() {
+                const command = document.getElementById('mpv-command').textContent;
+                navigator.clipboard.writeText(command).then(() => {
+                    alert('تم نسخ الأمر! الصقه في PowerShell');
+                });
+            }
+
+            // Simple logic to handle server buttons
+            const serverBtns = document.querySelectorAll('.server-btn');
+            serverBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const playerType = btn.getAttribute('data-player');
+
+                    if (playerType === 'mpv') {
+                        // Show MPV instructions
+                        showMpvInstructions(currentStreamUrl);
+                        serverBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    } else if (playerType === 'web') {
+                        // Hide MPV instructions and show web player
+                        document.getElementById('mpv-instructions').style.display = 'none';
+                        serverBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    }
+                });
+            });
+
+            // Function to show MPV instructions
+            function showMpvInstructions(streamUrl) {
+                const mpvPath = 'C:\\Users\\Admin\\AppData\\Local\\Programs\\mpv.net\\mpvnet.exe';
+                const command = `& "${mpvPath}" --referrer="https://x.com/" --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36" "${streamUrl}"`;
+
+                document.getElementById('mpv-command').textContent = command;
+                document.getElementById('mpv-instructions').style.display = 'block';
+
+                // Scroll to instructions
+                document.getElementById('mpv-instructions').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Dynamic Match Data Loading
+            document.addEventListener('DOMContentLoaded', () => {
+                const params = new URLSearchParams(window.location.search);
+                const homeTeam = params.get('home');
+
+                // Helper function to play stream
+                function playStream(url) {
+                    currentStreamUrl = url; // Store for MPV button
+
+                    const container = document.querySelector('.video-container');
+                    // Clear previous content but keep overlay if needed (though overlay logic might need adjustment)
+                    // preserving overlay
+                    const overlay = container.querySelector('.player-overlay');
+
+                    // Remove existing player elements
+                    const existingIframe = container.querySelector('iframe');
+                    const existingVideo = container.querySelector('video');
+                    if (existingIframe) existingIframe.remove();
+                    if (existingVideo) existingVideo.remove();
+
+                    if (url.includes('.m3u8')) {
+                        // Route m3u8 streams through proxy to handle headers
+                        const proxyUrl = CONFIG.getProxyUrl(url);
+
+                        // Create Video Element
+                        const video = document.createElement('video');
+                        video.id = 'video-player';
+                        video.controls = true;
+                        video.style.width = '100%';
+                        video.style.height = '100%';
+                        video.style.backgroundColor = '#000';
+                        container.appendChild(video);
+
+                        if (Hls.isSupported()) {
+                            const hls = new Hls({
+                                debug: false,
+                                enableWorker: true,
+                                lowLatencyMode: true,
+                                backBufferLength: 90
+                            });
+                            hls.loadSource(proxyUrl);
+                            hls.attachMedia(video);
+                            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                                console.log('Stream loaded successfully via proxy');
+                                // Auto-play might be blocked, let user interact or use the overlay
+                            });
+                            hls.on(Hls.Events.ERROR, function (event, data) {
+                                console.error('HLS error:', data);
+                                if (data.fatal) {
+                                    switch (data.type) {
+                                        case Hls.ErrorTypes.NETWORK_ERROR:
+                                            console.log('Network error, trying to recover...');
+                                            hls.startLoad();
+                                            break;
+                                        case Hls.ErrorTypes.MEDIA_ERROR:
+                                            console.log('Media error, trying to recover...');
+                                            hls.recoverMediaError();
+                                            break;
+                                        default:
+                                            console.log('Fatal error, cannot recover');
+                                            hls.destroy();
+                                            break;
+                                    }
+                                }
+                            });
+                        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                            video.src = proxyUrl;
+                        }
+                    } else {
+                        // Create Iframe
+                        const iframe = document.createElement('iframe');
+                        iframe.src = url;
+                        iframe.frameBorder = '0';
+                        iframe.allowFullscreen = true;
+                        iframe.style.width = '100%';
+                        iframe.style.height = '100%';
+                        container.appendChild(iframe);
+                    }
+                }
+
+                // Default Stream (The new one provided by user)
+                const defaultStream = "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577";
+
+                if (homeTeam) {
+                    // Update Breadcrumb
+                    const breadcrumbSpan = document.querySelector('.breadcrumb span');
+                    breadcrumbSpan.textContent = `${params.get('home')} vs ${params.get('away')}`;
+
+                    // Update Match Header
+                    // Home Team
+                    document.querySelector('.match-header .team:first-child h2').textContent = params.get('home');
+                    const homeLogoDiv = document.querySelector('.match-header .team:first-child .team-logo');
+                    if (homeLogoDiv) {
+                        homeLogoDiv.innerHTML = `<img src="${params.get('homeLogo')}" style="width:100%; height:100%; object-fit:contain;">`;
+                        homeLogoDiv.style.backgroundColor = 'transparent';
+                    }
+
+                    // Away Team
+                    document.querySelector('.match-header .team:last-child h2').textContent = params.get('away');
+                    const awayLogoDiv = document.querySelector('.match-header .team:last-child .team-logo');
+                    if (awayLogoDiv) {
+                        awayLogoDiv.innerHTML = `<img src="${params.get('awayLogo')}" style="width:100%; height:100%; object-fit:contain;">`;
+                        awayLogoDiv.style.backgroundColor = 'transparent';
+                    }
+
+                    // Score & Status
+                    document.querySelector('.score-large').textContent = params.get('score');
+                    document.querySelector('.status-badge').textContent = params.get('status');
+
+                    // Match Meta
+                    const metaValues = document.querySelectorAll('.meta-item .value');
+                    if (metaValues.length > 0) metaValues[0].textContent = params.get('league');
+                    if (metaValues.length > 1) metaValues[1].textContent = params.get('commentator') || 'غير معروف';
+                    if (metaValues.length > 2) metaValues[2].textContent = params.get('channel') || 'غير معروف';
+
+                    // Dynamic Stream Loading
+                    const streamUrl = params.get('streamUrl');
+                    if (streamUrl) {
+                        playStream(streamUrl);
+                    } else {
+                        playStream(defaultStream);
+                    }
+                } else {
+                    // If no params, play default
+                    playStream(defaultStream);
+                }
+            });
+        </script>
+</body>
+
+</html>

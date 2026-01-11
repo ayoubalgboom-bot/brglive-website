@@ -1,0 +1,32 @@
+{
+  "today": [
+    {
+      "home": "برشلونة",
+      "away": "ريال مدريد",
+      "homeLogo": "assets/barcelona.png",
+      "awayLogo": "assets/real_madrid.png",
+      "time": "23:00",
+      "status": "23:00",
+      "score": "0 - 0",
+      "league": "الدوري الإسباني",
+      "channel": "beIN Sports 1",
+      "commentator": "عصام الشوالي",
+      "streamUrl": "http://het101b.ycn-redirect.com/live/610303030/index.m3u8?t=ywdukc8IrU4XpCm2Iz89Iw&e=1768155540"
+    },
+    {
+      "home": "مانشستر يونايتد",
+      "away": "تشيلسي",
+      "homeLogo": "assets/man_utd.png",
+      "awayLogo": "assets/chelsea.png",
+      "time": "21:00",
+      "status": "21:00",
+      "score": "0 - 0",
+      "league": "الدوري الإنجليزي",
+      "channel": "beIN Sports1",
+      "commentator": "حفيظ دراجي",
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    }
+  ],
+  "tomorrow": [],
+  "yesterday": []
+}

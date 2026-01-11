@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - إدارة المباريات | brglive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container header-content">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/yalla_logo_real.png" alt="brglive" style="height: 50px;">
+                </a>
+            </div>
+            <h1 class="admin-title">لوحة التحكم - إدارة المباريات</h1>
+            <a href="index.html" class="btn-back">← العودة للموقع</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container admin-container">
+
+        <!-- Success/Error Messages -->
+        <div id="notification" class="notification hidden"></div>
+
+        <!-- Add/Edit Match Form -->
+        <section class="admin-section">
+            <h2 class="section-title">إضافة / تعديل مباراة</h2>
+            <form id="match-form" class="match-form">
+                <input type="hidden" id="edit-mode" value="false">
+                <input type="hidden" id="edit-day" value="">
+                <input type="hidden" id="edit-index" value="">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="home-team">الفريق المضيف</label>
+                        <input type="text" id="home-team" required placeholder="مثال: برشلونة">
+                    </div>
+                    <div class="form-group">
+                        <label for="away-team">الفريق الضيف</label>
+                        <input type="text" id="away-team" required placeholder="مثال: ريال مدريد">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="home-logo">رابط شعار الفريق المضيف</label>
+                        <input type="text" id="home-logo" required placeholder="مثال: assets/barcelona.png">
+                    </div>
+                    <div class="form-group">
+                        <label for="away-logo">رابط شعار الفريق الضيف</label>
+                        <input type="text" id="away-logo" required placeholder="مثال: assets/real_madrid.png">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="match-time">وقت المباراة</label>
+                        <input type="text" id="match-time" required placeholder="مثال: 23:00">
+                        <small>صيغة الوقت: HH:MM أو اكتب "جاري الآن" للمباريات المباشرة</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="match-score">النتيجة</label>
+                        <input type="text" id="match-score" required placeholder="مثال: 0 - 0">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="league">البطولة</label>
+                        <input type="text" id="league" required placeholder="مثال: الدوري الإسباني">
+                    </div>
+                    <div class="form-group">
+                        <label for="channel">القناة الناقلة</label>
+                        <input type="text" id="channel" required placeholder="مثال: beIN Sports 1">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="commentator">المعلق</label>
+                        <input type="text" id="commentator" required placeholder="مثال: عصام الشوالي">
+                    </div>
+                    <div class="form-group">
+                        <label for="match-day">اليوم</label>
+                        <select id="match-day" required>
+                            <option value="today">اليوم</option>
+                            <option value="tomorrow">غدًا</option>
+                            <option value="yesterday">أمس</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="stream-url">رابط البث المباشر</label>
+                    <input type="url" id="stream-url" required placeholder="مثال: http://example.com/stream.m3u8">
+                    <small>يجب أن يكون رابط .m3u8 صالح</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="submit-btn">إضافة المباراة</button>
+                    <button type="button" class="btn-secondary" id="cancel-btn" style="display:none;">إلغاء
+                        التعديل</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Existing Matches List -->
+        <section class="admin-section">
+            <h2 class="section-title">المباريات الحالية</h2>
+
+            <div class="matches-tabs-admin">
+                <button class="tab-btn-admin active" data-day="today">اليوم</button>
+                <button class="tab-btn-admin" data-day="tomorrow">غدًا</button>
+                <button class="tab-btn-admin" data-day="yesterday">أمس</button>
+            </div>
+
+            <div id="matches-list" class="matches-list-admin">
+                <div class="loading">جاري تحميل المباريات...</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <p class="copyright">© 2026 brglive Admin Panel. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>
