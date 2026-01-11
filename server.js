@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const MATCHES_FILE = path.join(__dirname, 'matches.json');
 
 // Initialize matches data
@@ -200,9 +201,9 @@ const server = http.createServer(async (req, res) => {
                         if (!line || line.startsWith('#')) return line;
                         if (!line.match(/^https?:\/\//)) {
                             const absoluteUrl = baseUrl + line;
-                            return `http://localhost:${PORT}/proxy?url=${encodeURIComponent(absoluteUrl)}`;
+                            return `${BASE_URL}/proxy?url=${encodeURIComponent(absoluteUrl)}`;
                         } else {
-                            return `http://localhost:${PORT}/proxy?url=${encodeURIComponent(line)}`;
+                            return `${BASE_URL}/proxy?url=${encodeURIComponent(line)}`;
                         }
                     });
                     res.end(modifiedLines.join('\n'));
