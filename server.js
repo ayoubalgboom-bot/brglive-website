@@ -195,14 +195,38 @@ const server = http.createServer(async (req, res) => {
                 proxyRes.on('data', (chunk) => data += chunk.toString());
                 proxyRes.on('end', () => {
                     const baseUrl = streamUrl.substring(0, streamUrl.lastIndexOf('/') + 1);
+                    // Extract query parameters from the original stream URL
+                    const urlParts = url.parse(streamUrl);
+                    const queryString = urlParts.search || '';
+
                     const lines = data.split('\n');
                     const modifiedLines = lines.map(line => {
                         line = line.trim();
                         if (!line || line.startsWith('#')) return line;
+
+                        // It's a URL (segment or nested playlist)
                         if (!line.match(/^https?:\/\//)) {
-                            const absoluteUrl = baseUrl + line;
+                            // Relative URL: Resolve against base URL and append original query string
+                            // Using URL constructor to handle paths correctly, then adding query string
+                            // Note: We simply append the query string. If the relative URL already has params, 
+                            // we might need more complex logic, but usually m3u8 segments don't have params 
+                            // if they are relative, while the master playlist params are needed.
+                            // Better approach: manual concatenation to be safe with the extracted queryString which starts with ?
+
+                            // Check if line already has a query string
+                            const separator = line.includes('?') ? '&' : (queryString ? '?' : '');
+                            const paramsToAdd = queryString.startsWith('?') ? queryString.substring(1) : queryString;
+
+                            let absoluteUrl = baseUrl + line;
+                            if (paramsToAdd) {
+                                absoluteUrl += (absoluteUrl.includes('?') ? '&' : '?') + paramsToAdd;
+                            }
+
                             return `${BASE_URL}/proxy?url=${encodeURIComponent(absoluteUrl)}`;
                         } else {
+                            // Absolute URL: Just verify if we need to pass params (usually absolute URLs in m3u8 might be different servers)
+                            // For now, let's assume absolute URLs are complete, or we can choose to append tokens too if needed.
+                            // Let's stick to just proxying it.
                             return `${BASE_URL}/proxy?url=${encodeURIComponent(line)}`;
                         }
                     });
