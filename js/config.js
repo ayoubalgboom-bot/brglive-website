@@ -34,7 +34,9 @@ const CONFIG = (() => {
 
         // Helper function to get matches source
         getMatchesSource: function () {
-            return this.isDevelopment ? this.apiBase : this.matchesJsonUrl;
+            // Always use the API (Cloudflare Tunnel in production) to ensure 
+            // the website shows the live data from your PC, not the old file on GitHub.
+            return this.apiBase;
         }
     };
 })();
