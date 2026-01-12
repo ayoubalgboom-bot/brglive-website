@@ -20,7 +20,7 @@ const CONFIG = (() => {
         isProduction: !isLocalhost,
 
         // API Endpoints
-        apiBase: isLocalhost ? 'http://localhost:3000/api/matches' : null,
+        apiBase: isLocalhost ? 'http://localhost:3000/api/matches' : `${PRODUCTION_PROXY_URL}/api/matches`,
         matchesJsonUrl: isLocalhost ? null : PRODUCTION_MATCHES_URL,
 
         // Proxy URLs
