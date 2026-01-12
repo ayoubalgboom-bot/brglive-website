@@ -90,13 +90,19 @@ const server = http.createServer(async (req, res) => {
         '*' // Allow all for now, tighten in production
     ];
 
+    // Strict CORS handling for Cloudflare Tunnel
     const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
-        res.setHeader('Access-Control-Allow-Origin', origin || '*');
+
+    // Always allow the GitHub Pages origin explicitly
+    if (origin && (origin.includes('ayoubalgboom-bot.github.io') || origin.includes('localhost'))) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+        res.setHeader('Access-Control-Allow-Origin', '*');
     }
 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Bypass-Tunnel-Reminder, ngrok-skip-browser-warning');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     // Handle preflight
     if (req.method === 'OPTIONS') {
@@ -113,6 +119,21 @@ const server = http.createServer(async (req, res) => {
         // GET all matches
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify(matchesData));
+        return;
+    }
+
+    // Shift Day Endpoint
+    if (pathname === '/api/matches/shift' && req.method === 'POST') {
+        // Move Today -> Yesterday
+        matchesData.yesterday = [...matchesData.today];
+        // Move Tomorrow -> Today
+        matchesData.today = [...matchesData.tomorrow];
+        // Clear Tomorrow
+        matchesData.tomorrow = [];
+
+        saveMatches();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: 'Day shifted successfully' }));
         return;
     }
 
@@ -222,12 +243,19 @@ const server = http.createServer(async (req, res) => {
                                 absoluteUrl += (absoluteUrl.includes('?') ? '&' : '?') + paramsToAdd;
                             }
 
-                            return `${BASE_URL}/proxy?url=${encodeURIComponent(absoluteUrl)}`;
+                            // Use the host from the request headers to construct the proxy URL
+                            const protocol = req.headers['x-forwarded-proto'] || 'http';
+                            const host = req.headers.host;
+                            const currentBaseUrl = `${protocol}://${host}`;
+
+                            return `${currentBaseUrl}/proxy?url=${encodeURIComponent(absoluteUrl)}`;
                         } else {
-                            // Absolute URL: Just verify if we need to pass params (usually absolute URLs in m3u8 might be different servers)
-                            // For now, let's assume absolute URLs are complete, or we can choose to append tokens too if needed.
-                            // Let's stick to just proxying it.
-                            return `${BASE_URL}/proxy?url=${encodeURIComponent(line)}`;
+                            // Absolute URL
+                            const protocol = req.headers['x-forwarded-proto'] || 'http';
+                            const host = req.headers.host;
+                            const currentBaseUrl = `${protocol}://${host}`;
+
+                            return `${currentBaseUrl}/proxy?url=${encodeURIComponent(line)}`;
                         }
                     });
                     res.end(modifiedLines.join('\n'));

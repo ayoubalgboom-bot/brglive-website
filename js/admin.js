@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Buttons
     const submitBtn = document.getElementById('submit-btn');
     const cancelBtn = document.getElementById('cancel-btn');
+    const shiftDayBtn = document.getElementById('shift-day-btn');
 
     // Lists
     const matchesList = document.getElementById('matches-list');
@@ -257,4 +258,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load
     fetchMatches();
+
+    // Shift Day Logic
+    if (shiftDayBtn) {
+        shiftDayBtn.addEventListener('click', async () => {
+            if (!confirm('هل أنت متأكد؟ سيتم نقل مباريات الغد إلى اليوم، واليوم إلى الأمس.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/shift`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    showNotification('تم بدء يوم جديد بنجاح', 'success');
+                    await fetchMatches();
+                } else {
+                    showNotification('فشل في بدء يوم جديد', 'error');
+                }
+            } catch (error) {
+                showNotification('خطأ في الاتصال بالخادم', 'error');
+                console.error('Error shifting day:', error);
+            }
+        });
+    }
 });

@@ -27,6 +27,29 @@
     box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'Cairo', sans-serif;
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 94, 98, 0.4);
+}
+
 /* Notification Messages */
 .notification {
     position: fixed;
@@ -46,6 +69,7 @@
         transform: translateX(400px);
         opacity: 0;
     }
+
     to {
         transform: translateX(0);
         opacity: 1;
