@@ -1,3 +1,4 @@
-echo Starting Serveo Tunnel...
-ssh -o StrictHostKeyChecking=no -R brglive-proxy:80:localhost:3000 serveo.net > tunnel.log 2>&1
+@echo off
+echo Starting LocalTunnel...
+npx -y localtunnel --port 3000
 pause
