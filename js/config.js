@@ -24,7 +24,8 @@ const CONFIG = (() => {
         matchesJsonUrl: isLocalhost ? null : PRODUCTION_MATCHES_URL,
 
         // Proxy URLs
-        proxyUrl: isLocalhost ? 'http://localhost:3000/proxy' : `${PRODUCTION_PROXY_URL}/proxy`,
+        // Proxy URLs - Use Cloudflare for everything to ensure it works
+        proxyUrl: `${PRODUCTION_PROXY_URL}/proxy`,
 
         // Helper function to get proxy URL for a stream
         getProxyUrl: function (streamUrl) {
