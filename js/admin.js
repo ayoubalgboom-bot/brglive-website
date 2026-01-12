@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const channel = document.getElementById('channel');
     const commentator = document.getElementById('commentator');
     const matchDay = document.getElementById('match-day');
+    const matchStatus = document.getElementById('match-status'); // New status dropdown
     const streamUrl = document.getElementById('stream-url');
 
     // Edit mode fields
@@ -115,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             homeLogo: homeLogo.value.trim(),
             awayLogo: awayLogo.value.trim(),
             time: matchTime.value.trim(),
-            status: matchTime.value.trim(),
+            status: matchStatus.value === 'live' ? 'جاري الآن' : (matchStatus.value === 'ended' ? 'انتهت' : matchTime.value.trim()),
             score: matchScore.value.trim(),
             league: league.value.trim(),
             channel: channel.value.trim(),
@@ -183,7 +184,18 @@ document.addEventListener('DOMContentLoaded', () => {
         league.value = match.league;
         channel.value = match.channel;
         commentator.value = match.commentator;
+        commentator.value = match.commentator;
         matchDay.value = day;
+
+        // Set status dropdown logic
+        if (match.status === 'جاري الآن') {
+            matchStatus.value = 'live';
+        } else if (match.status === 'انتهت') {
+            matchStatus.value = 'ended';
+        } else {
+            matchStatus.value = 'scheduled';
+        }
+
         streamUrl.value = match.streamUrl;
 
         editMode.value = 'true';

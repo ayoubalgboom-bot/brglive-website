@@ -70,49 +70,57 @@
                         <input type="text" id="match-time" required placeholder="مثال: 23:00">
                         <small>صيغة الوقت: HH:MM أو اكتب "جاري الآن" للمباريات المباشرة</small>
                     </div>
-                    <div class="form-group">
-                        <label for="match-score">النتيجة</label>
-                        <input type="text" id="match-score" required placeholder="مثال: 0 - 0">
-                    </div>
+                    <input type="text" id="match-score" required placeholder="مثال: 0 - 0">
+                </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="league">البطولة</label>
-                        <input type="text" id="league" required placeholder="مثال: الدوري الإسباني">
-                    </div>
-                    <div class="form-group">
-                        <label for="channel">القناة الناقلة</label>
-                        <input type="text" id="channel" required placeholder="مثال: beIN Sports 1">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="commentator">المعلق</label>
-                        <input type="text" id="commentator" required placeholder="مثال: عصام الشوالي">
-                    </div>
-                    <div class="form-group">
-                        <label for="match-day">اليوم</label>
-                        <select id="match-day" required>
-                            <option value="today">اليوم</option>
-                            <option value="tomorrow">غدًا</option>
-                            <option value="yesterday">أمس</option>
+                        <label for="match-status">حالة المباراة</label>
+                        <select id="match-status" required>
+                            <option value="scheduled">مجدولة (يعرض الوقت)</option>
+                            <option value="live">جاري الآن 🔴</option>
+                            <option value="ended">انتهت 🏁</option>
                         </select>
                     </div>
-                </div>
 
-                <div class="form-group full-width">
-                    <label for="stream-url">رابط البث المباشر</label>
-                    <input type="url" id="stream-url" required placeholder="مثال: http://example.com/stream.m3u8">
-                    <small>يجب أن يكون رابط .m3u8 صالح</small>
-                </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="league">البطولة</label>
+                            <input type="text" id="league" required placeholder="مثال: الدوري الإسباني">
+                        </div>
+                        <div class="form-group">
+                            <label for="channel">القناة الناقلة</label>
+                            <input type="text" id="channel" required placeholder="مثال: beIN Sports 1">
+                        </div>
+                    </div>
 
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary" id="submit-btn">إضافة المباراة</button>
-                    <button type="button" class="btn-secondary" id="cancel-btn" style="display:none;">إلغاء
-                        التعديل</button>
-                </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="commentator">المعلق</label>
+                            <input type="text" id="commentator" required placeholder="مثال: عصام الشوالي">
+                        </div>
+                        <div class="form-group">
+                            <label for="match-day">اليوم</label>
+                            <select id="match-day" required>
+                                <option value="today">اليوم</option>
+                                <option value="tomorrow">غدًا</option>
+                                <option value="yesterday">أمس</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="stream-url">رابط البث المباشر</label>
+                        <input type="url" id="stream-url" required placeholder="مثال: http://example.com/stream.m3u8">
+                        <small>يجب أن يكون رابط .m3u8 صالح</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary" id="submit-btn">إضافة المباراة</button>
+                        <button type="button" class="btn-secondary" id="cancel-btn" style="display:none;">إلغاء
+                            التعديل</button>
+                    </div>
             </form>
         </section>
 
