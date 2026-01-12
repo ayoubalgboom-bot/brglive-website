@@ -1,4 +1,3 @@
-@echo off
-echo Starting PC Tunnel...
-call npx localtunnel --port 3000
+echo Starting Serveo Tunnel...
+ssh -o StrictHostKeyChecking=no -R brglive-proxy:80:localhost:3000 serveo.net > tunnel.log 2>&1
 pause
