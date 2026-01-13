@@ -60,13 +60,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Mock Data for Matches (Fallback if API fails)
+    // Updated with all 7 matches from matches.json to ensure users always see full match list
     const fallbackMatchesData = {
         today: [
             {
-                home: 'برشلونة', away: 'ريال مدريد', score: '0 - 0', status: '23:00', time: '23:00',
+                home: 'برشلونة', away: 'ريال مدريد', score: '0 - 0', status: 'انتهت', time: '23:00',
                 league: 'الدوري الإسباني', channel: 'beIN Sports 1', commentator: 'عصام الشوالي',
                 homeLogo: 'assets/barcelona.png', awayLogo: 'assets/real_madrid.png',
+                streamUrl: 'http://het101b.ycn-redirect.com/live/610303030/index.m3u8?t=ywdukc8IrU4XpCm2Iz89Iw&e=1768155540'
+            },
+            {
+                home: 'مانشستر يونايتد', away: 'تشيلسي', score: '0 - 0', status: 'انتهت', time: '21:00',
+                league: 'الدوري الإنجليزي', channel: 'beIN Sports1', commentator: 'حفيظ دراجي',
+                homeLogo: 'assets/man_utd.png', awayLogo: 'assets/chelsea.png',
                 streamUrl: 'http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577'
+            },
+            {
+                home: 'السعودية تحت 23', away: 'فيتنام تحت 23', score: '0-0', status: 'انتهت', time: '05:30 PM',
+                league: 'كأس آسيا تحت 23 سنة', channel: 'bein sport 5', commentator: 'غير معروف',
+                homeLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/12/28914-150x150.png',
+                awayLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2026/01/28923.png',
+                streamUrl: 'http://het101b.ycn-redirect.com/live/610303030/index.m3u8?t=ywdukc8IrU4XpCm2Iz89Iw&e=1768155540'
+            },
+            {
+                home: 'ليفربول', away: 'بارنزلي', score: '0-0', status: '08:45 PM', time: '08:45 PM',
+                league: 'إنجلترا, كاس الاتحاد الإنجليزي - الدور 3', channel: 'Bein Sports HD2', commentator: 'غير معروف',
+                homeLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/108-90x150.png',
+                awayLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/09/17-150x150.png',
+                streamUrl: 'http://het137b.ycn-redirect.com/live/69854211/index.m3u8?t=QQft5riYAQbrc-F-YgQlgA&e=1768255838'
+            },
+            {
+                home: 'يوفنتوس', away: 'كريمونيسي', score: '0-0', status: '08:45 PM', time: '08:45 PM',
+                league: 'إيطاليا, الدوري الإيطالي', channel: 'Starzplay', commentator: 'غير معروف',
+                homeLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/226-150x150.png',
+                awayLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/290.png',
+                streamUrl: 'https://dnlyr.yallashootttv.com/hls/ch10/master.m3u8'
+            },
+            {
+                home: 'إشبيلية', away: 'سيلتا فيجو', score: '0-0', status: '09:00 PM', time: '09:00 PM',
+                league: 'إسبانيا, الدوري الإسباني', channel: 'beIN Sports 3 HD', commentator: 'غير معروف',
+                homeLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/135-1-135x150.png',
+                awayLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/158-1.png',
+                streamUrl: 'https://dnlys.yallashoooootlive.info/hls/ch3/master.m3u8'
+            },
+            {
+                home: 'باريس سان جيرمان', away: 'باريس أف.سي.', score: '0-0', status: '09:10 PM', time: '09:10 PM',
+                league: 'فرنسا, كأس فرنسا - دور الـ 32', channel: 'beIN SPORTS HD 1', commentator: 'غير معروف',
+                homeLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/480-150x150.png',
+                awayLogo: 'https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/6075.png',
+                streamUrl: 'https://dnlyt.yallashootttv.com/hls/ch1/master.m3u8'
             }
         ],
         yesterday: [],
@@ -76,7 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let matchesData = fallbackMatchesData;
 
     // Fetch matches from API or matches.json depending on environment
-    async function fetchMatchesFromAPI() {
+    // Now with retry logic to handle tunnel startup delays
+    async function fetchMatchesFromAPI(retryCount = 0) {
+        const MAX_RETRIES = 3;
+        const RETRY_DELAY = 2000; // 2 seconds
+
         try {
             const source = CONFIG.getMatchesSource();
 
@@ -85,25 +131,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 return false;
             }
 
-            console.log('📡 Fetching matches from:', source);
+            console.log(`📡 Fetching matches from: ${source} (Attempt ${retryCount + 1}/${MAX_RETRIES})`);
             const response = await fetch(source);
 
             if (response.ok) {
                 const data = await response.json();
                 matchesData = data;
-                console.log('✅ Matches loaded successfully');
+                console.log('✅ Matches loaded successfully from API');
+                console.log(`📊 Loaded ${data.today?.length || 0} today, ${data.tomorrow?.length || 0} tomorrow, ${data.yesterday?.length || 0} yesterday`);
                 return true;
             } else {
-                console.error('❌ Failed to fetch matches:', response.status);
+                console.error(`❌ Failed to fetch matches: ${response.status} ${response.statusText}`);
+
+                // Retry if we haven't exceeded max retries
+                if (retryCount < MAX_RETRIES - 1) {
+                    console.log(`⏳ Retrying in ${RETRY_DELAY / 1000} seconds...`);
+                    await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+                    return fetchMatchesFromAPI(retryCount + 1);
+                }
             }
         } catch (error) {
-            console.warn('⚠️ Error fetching matches:', error);
+            console.warn('⚠️ Error fetching matches:', error.message);
 
-            // In production, if matches.json fails, there's no fallback
-            // In development, we already tried the API
-            if (CONFIG.isDevelopment) {
-                console.log('💡 Using fallback data');
+            // Retry if we haven't exceeded max retries
+            if (retryCount < MAX_RETRIES - 1) {
+                console.log(`⏳ Retrying in ${RETRY_DELAY / 1000} seconds...`);
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+                return fetchMatchesFromAPI(retryCount + 1);
             }
+
+            // After all retries failed
+            console.log('💡 Using fallback data (7 matches)');
         }
         return false;
     }
