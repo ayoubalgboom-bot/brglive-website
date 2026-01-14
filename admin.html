@@ -144,6 +144,54 @@
                 <div class="loading">جاري تحميل المباريات...</div>
             </div>
         </section>
+
+        <!-- Channel Management Section -->
+        <section class="admin-section">
+            <h2 class="section-title">📺 إدارة القنوات المباشرة</h2>
+
+            <!-- Channel Form -->
+            <form id="channel-form" class="match-form">
+                <input type="hidden" id="channel-edit-mode" value="false">
+                <input type="hidden" id="channel-edit-id" value="">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="channel-name">اسم القناة</label>
+                        <input type="text" id="channel-name" required placeholder="مثال: beIN Sports 1 HD">
+                    </div>
+                    <div class="form-group">
+                        <label for="channel-category">التصنيف</label>
+                        <input type="text" id="channel-category" required placeholder="مثال: Sports">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="channel-logo">رابط شعار القناة</label>
+                        <input type="text" id="channel-logo" required placeholder="مثال: https://example.com/logo.png">
+                        <small>يمكنك استخدام روابط من Imgur أو أي موقع آخر</small>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="channel-stream">رابط البث المباشر</label>
+                    <input type="url" id="channel-stream" required placeholder="http://example.com/stream.m3u8">
+                    <small>يجب أن يكون رابط .m3u8 صالح</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="channel-submit-btn">إضافة القناة</button>
+                    <button type="button" class="btn-secondary" id="channel-cancel-btn" style="display:none;">إلغاء
+                        التعديل</button>
+                </div>
+            </form>
+
+            <!-- Channels List -->
+            <h3 class="section-title" style="margin-top: 40px; font-size: 1.4rem;">القنوات الحالية</h3>
+            <div id="channels-list" class="matches-list-admin">
+                <div class="loading">جاري تحميل القنوات...</div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->

@@ -283,4 +283,187 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // ========== CHANNEL MANAGEMENT ==========
+    const CHANNELS_API = API_BASE.replace('/matches', '/channels');
+    const channelForm = document.getElementById('channel-form');
+    const channelName = document.getElementById('channel-name');
+    const channelCategory = document.getElementById('channel-category');
+    const channelLogo = document.getElementById('channel-logo');
+    const channelStream = document.getElementById('channel-stream');
+    const channelEditMode = document.getElementById('channel-edit-mode');
+    const channelEditId = document.getElementById('channel-edit-id');
+    const channelSubmitBtn = document.getElementById('channel-submit-btn');
+    const channelCancelBtn = document.getElementById('channel-cancel-btn');
+    const channelsList = document.getElementById('channels-list');
+
+    let channelsData = [];
+
+    // Fetch channels
+    async function fetchChannels() {
+        try {
+            const response = await fetch(CHANNELS_API);
+            if (response.ok) {
+                const data = await response.json();
+                channelsData = data.channels || [];
+                renderChannels();
+            } else {
+                showNotification('فشل في تحميل القنوات', 'error');
+            }
+        } catch (error) {
+            showNotification('خطأ في الاتصال بالخادم', 'error');
+            console.error('Error fetching channels:', error);
+        }
+    }
+
+    // Render channels list
+    function renderChannels() {
+        if (!channelsList) return;
+
+        channelsList.innerHTML = '';
+
+        if (channelsData.length === 0) {
+            channelsList.innerHTML = '<div class="no-matches">لا توجد قنوات</div>';
+            return;
+        }
+
+        channelsData.forEach((channel) => {
+            const channelItem = document.createElement('div');
+            channelItem.className = 'match-item-admin';
+            channelItem.innerHTML = `
+                <div class="match-info-admin">
+                    <div class="match-teams">
+                        <img src="${channel.logo}" alt="${channel.name}" style="width: 40px; height: 40px; object-fit: contain;" onerror="this.src='assets/logo.png'">
+                        <span><strong>${channel.name}</strong></span>
+                    </div>
+                    <div class="match-meta">
+                        <div><strong>التصنيف:</strong> ${channel.category}</div>
+                        <div><strong>البث:</strong> ${channel.streamUrl.substring(0, 50)}...</div>
+                    </div>
+                </div>
+                <div class="match-actions">
+                    <button class="btn-edit" onclick="editChannel('${channel.id}')">تعديل</button>
+                    <button class="btn-delete" onclick="deleteChannel('${channel.id}')">حذف</button>
+                </div>
+            `;
+            channelsList.appendChild(channelItem);
+        });
+    }
+
+    // Add/Update channel
+    if (channelForm) {
+        channelForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const channelData = {
+                name: channelName.value.trim(),
+                category: channelCategory.value.trim(),
+                logo: channelLogo.value.trim(),
+                streamUrl: channelStream.value.trim()
+            };
+
+            const isEditMode = channelEditMode.value === 'true';
+
+            try {
+                let response;
+
+                if (isEditMode) {
+                    // Update channel
+                    const id = channelEditId.value;
+                    response = await fetch(`${CHANNELS_API}/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(channelData)
+                    });
+
+                    if (response.ok) {
+                        showNotification('تم تحديث القناة بنجاح', 'success');
+                        resetChannelForm();
+                    } else {
+                        showNotification('فشل في تحديث القناة', 'error');
+                    }
+                } else {
+                    // Add new channel
+                    response = await fetch(CHANNELS_API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(channelData)
+                    });
+
+                    if (response.ok) {
+                        showNotification('تمت إضافة القناة بنجاح', 'success');
+                        channelForm.reset();
+                    } else {
+                        showNotification('فشل في إضافة القناة', 'error');
+                    }
+                }
+
+                await fetchChannels();
+            } catch (error) {
+                showNotification('خطأ في الاتصال بالخادم', 'error');
+                console.error('Error saving channel:', error);
+            }
+        });
+    }
+
+    // Edit channel
+    window.editChannel = function (id) {
+        const channel = channelsData.find(c => c.id === id);
+        if (!channel) return;
+
+        channelName.value = channel.name;
+        channelCategory.value = channel.category;
+        channelLogo.value = channel.logo;
+        channelStream.value = channel.streamUrl;
+
+        channelEditMode.value = 'true';
+        channelEditId.value = id;
+
+        channelSubmitBtn.textContent = 'تحديث القناة';
+        channelCancelBtn.style.display = 'block';
+
+        channelForm.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Delete channel
+    window.deleteChannel = async function (id) {
+        if (!confirm('هل أنت متأكد من حذف هذه القناة؟')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${CHANNELS_API}/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                showNotification('تم حذف القناة بنجاح', 'success');
+                await fetchChannels();
+            } else {
+                showNotification('فشل في حذف القناة', 'error');
+            }
+        } catch (error) {
+            showNotification('خطأ في الاتصال بالخادم', 'error');
+            console.error('Error deleting channel:', error);
+        }
+    };
+
+    // Reset channel form
+    function resetChannelForm() {
+        channelForm.reset();
+        channelEditMode.value = 'false';
+        channelEditId.value = '';
+        channelSubmitBtn.textContent = 'إضافة القناة';
+        channelCancelBtn.style.display = 'none';
+    }
+
+    // Cancel channel edit
+    if (channelCancelBtn) {
+        channelCancelBtn.addEventListener('click', resetChannelForm);
+    }
+
+    // Load channels on startup
+    if (channelsList) {
+        fetchChannels();
+    }
 });
