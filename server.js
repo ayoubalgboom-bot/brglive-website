@@ -12,12 +12,18 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const MATCHES_FILE = path.join(__dirname, 'matches.json');
+const CHANNELS_FILE = path.join(__dirname, 'channels.json');
 
 // Initialize matches data
 let matchesData = {
     today: [],
     tomorrow: [],
     yesterday: []
+};
+
+// Initialize channels data
+let channelsData = {
+    channels: []
 };
 
 // Load matches from file
@@ -64,6 +70,32 @@ function saveMatches() {
     }
 }
 
+// Load channels from file
+function loadChannels() {
+    try {
+        if (fs.existsSync(CHANNELS_FILE)) {
+            const data = fs.readFileSync(CHANNELS_FILE, 'utf8');
+            channelsData = JSON.parse(data);
+            console.log('✅ Channels loaded from file');
+        } else {
+            // Create default channels file
+            saveChannels();
+        }
+    } catch (error) {
+        console.error('Error loading channels:', error);
+    }
+}
+
+// Save channels to file
+function saveChannels() {
+    try {
+        fs.writeFileSync(CHANNELS_FILE, JSON.stringify(channelsData, null, 2));
+        console.log('💾 Channels saved to file');
+    } catch (error) {
+        console.error('Error saving channels:', error);
+    }
+}
+
 // Parse request body
 function parseBody(req) {
     return new Promise((resolve, reject) => {
@@ -83,20 +115,15 @@ function parseBody(req) {
 // Main server
 const server = http.createServer(async (req, res) => {
     // Enable CORS for both local and production
-    const allowedOrigins = [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        'https://ayoubalgboom-bot.github.io', // Replace with your GitHub Pages URL
-        '*' // Allow all for now, tighten in production
-    ];
-
-    // Strict CORS handling for Cloudflare Tunnel
+    // Enable CORS for all domains (since we have dynamic tunnel URLs and custom domains)
     const origin = req.headers.origin;
 
-    // Always allow the GitHub Pages origin explicitly
-    if (origin && (origin.includes('ayoubalgboom-bot.github.io') || origin.includes('localhost'))) {
+    // Check if origin is present (browser request)
+    if (origin) {
+        // Allow the specific origin that is requesting
         res.setHeader('Access-Control-Allow-Origin', origin);
     } else {
+        // Fallback for non-browser requests
         res.setHeader('Access-Control-Allow-Origin', '*');
     }
 
@@ -174,6 +201,65 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ success: true }));
             return;
         }
+    }
+
+    // ========== CHANNELS API ENDPOINTS ==========
+
+    // GET all channels
+    if (pathname === '/api/channels' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(channelsData));
+        return;
+    }
+
+    // POST new channel
+    if (pathname === '/api/channels' && req.method === 'POST') {
+        const channelData = await parseBody(req);
+        // Generate ID
+        const newId = channelsData.channels.length > 0
+            ? String(Math.max(...channelsData.channels.map(c => parseInt(c.id))) + 1)
+            : '1';
+        channelData.id = newId;
+        channelsData.channels.push(channelData);
+        saveChannels();
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, channel: channelData }));
+        return;
+    }
+
+    // PUT update channel by ID
+    if (pathname.match(/^\/api\/channels\/\d+$/) && req.method === 'PUT') {
+        const channelId = pathname.split('/')[3];
+        const channelData = await parseBody(req);
+        const index = channelsData.channels.findIndex(c => c.id === channelId);
+
+        if (index !== -1) {
+            channelsData.channels[index] = { ...channelsData.channels[index], ...channelData, id: channelId };
+            saveChannels();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Channel not found' }));
+        }
+        return;
+    }
+
+    // DELETE channel by ID
+    if (pathname.match(/^\/api\/channels\/\d+$/) && req.method === 'DELETE') {
+        const channelId = pathname.split('/')[3];
+        const index = channelsData.channels.findIndex(c => c.id === channelId);
+
+        if (index !== -1) {
+            channelsData.channels.splice(index, 1);
+            saveChannels();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Channel not found' }));
+        }
+        return;
     }
 
     // Proxy Route
@@ -318,6 +404,7 @@ const server = http.createServer(async (req, res) => {
 
 // Load matches on startup
 loadMatches();
+loadChannels();
 
 server.listen(PORT, () => {
     console.log(`\n🚀 Server running on http://localhost:${PORT}`);

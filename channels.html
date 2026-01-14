@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>brglive - مشاهدة مباريات اليوم بث مباشر</title>
+    <title>القنوات المباشرة - brglive</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -12,8 +12,6 @@
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="assets/logo.png">
-
-    <script src="https://pl28468203.effectivegatecpm.com/c2/a8/a5/c2a8a5e4c3ca5bb2f09f4da484332995.js"></script>
 </head>
 
 <body>
@@ -32,11 +30,7 @@
                     <img src="assets/logo.png" alt="brglive" style="height: 50px;">
                 </a>
             </div>
-            <div class="nav-controls">
-                <a href="channels.html"
-                    style="color: var(--text-primary); text-decoration: none; font-weight: 600; padding: 10px 20px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transition: transform 0.2s;">📺
-                    القنوات</a>
-            </div>
+            <div class="nav-controls"></div>
 
             <button id="theme-toggle" aria-label="Toggle Dark Mode">
                 <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -62,37 +56,15 @@
 
     <!-- Main Content -->
     <main class="container">
-        <!-- Date Tabs -->
-        <section class="matches-tabs">
-            <button class="tab-btn yesterday" data-target="yesterday">أمس</button>
-            <button class="tab-btn today active" data-target="today">اليوم</button>
-            <button class="tab-btn tomorrow" data-target="tomorrow">غدًا</button>
+        <section class="page-header" style="margin: 30px 0;">
+            <h1 style="font-size: 2rem; font-weight: 700; color: var(--text-primary);">📺 القنوات المباشرة</h1>
+            <p style="color: var(--text-secondary); margin-top: 10px;">شاهد قنواتك المفضلة بث مباشر</p>
         </section>
 
-        <!-- Live Matches List -->
-        <section class="matches-list" id="matches-container">
-            <!-- Matches will be injected here by JS -->
-            <div class="loading">جاري تحميل المباريات...</div>
-        </section>
-
-        <!-- News Section -->
-        <section class="news-section">
-            <h2 class="section-title">أحدث الأخبار</h2>
-            <div class="news-grid">
-                <!-- News items placeholder -->
-                <article class="news-card">
-                    <img src="assets/news_stadium.png" alt="News" class="news-image">
-                    <h3>ملخص مباراة الامس في الدوري الانجليزي</h3>
-                </article>
-                <article class="news-card">
-                    <img src="assets/news_stadium.png" alt="News" class="news-image news-image-alt">
-                    <h3>تصريحات المدرب قبل المواجهة الحاسمة</h3>
-                </article>
-                <article class="news-card">
-                    <img src="assets/news_stadium.png" alt="News" class="news-image news-image-alt-2">
-                    <h3>رسميا: موعد الكلاسيكو القادم</h3>
-                </article>
-            </div>
+        <!-- Channels Grid -->
+        <section class="matches-list" id="channels-container">
+            <!-- Channels will be injected here by JS -->
+            <div class="loading">جاري تحميل القنوات...</div>
         </section>
     </main>
 
@@ -106,7 +78,7 @@
         <div class="container">
             <div class="footer-links">
                 <a href="index.html?day=today">مباريات اليوم</a>
-                <a href="index.html?day=tomorrow">مباريات الغد</a>
+                <a href="channels.html">القنوات المباشرة</a>
                 <a href="#">اتصل بنا</a>
             </div>
             <p class="copyright">© 2026 brglive. جميع الحقوق محفوظة.</p>
@@ -115,6 +87,7 @@
 
     <script src="js/config.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/channels.js"></script>
 </body>
 
 </html>
