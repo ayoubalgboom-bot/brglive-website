@@ -184,6 +184,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('matches-container');
     const tabs = document.querySelectorAll('.tab-btn');
 
+    // Helper function to calculate match status based on time
+    function getMatchStatus(matchTimeStr, originalStatus) {
+        // If status is manually set to specific values, respect them
+        if (originalStatus === 'انتهت' || originalStatus === 'جاري الآن' || originalStatus === 'مؤجلة') {
+            return { text: originalStatus, class: originalStatus === 'جاري الآن' ? 'live' : '' };
+        }
+
+        // Parse match time (expected "HH:MM")
+        // Note: Assumes match time is in local time or comparable format
+        const now = new Date();
+        const [hours, minutes] = matchTimeStr.split(':').map(Number);
+
+        if (isNaN(hours) || isNaN(minutes)) {
+            // If time format is invalid (like "09:00 PM" instead of "21:00"), just return original
+            return { text: originalStatus, class: '' };
+        }
+
+        const matchDate = new Date();
+        matchDate.setHours(hours, minutes, 0, 0);
+
+        const diffMinutes = (matchDate - now) / (1000 * 60);
+
+        // Logic:
+        // > 30 mins before: Show Time
+        // 0-30 mins before: "تبدأ قريبًا" (Starts Soon)
+        // 0-120 mins after: "جاري الآن" (Live)
+        // > 120 mins after: "انتهت" (Ended)
+
+        if (diffMinutes > 30) {
+            return { text: matchTimeStr, class: 'scheduled' };
+        } else if (diffMinutes > 0 && diffMinutes <= 30) {
+            return { text: 'تبدأ قريبًا', class: 'soon' };
+        } else if (diffMinutes <= 0 && diffMinutes > -120) { // 2 hours duration
+            return { text: 'جاري الآن', class: 'live' };
+        } else {
+            return { text: 'انتهت', class: 'ended' };
+        }
+    }
+
     function renderMatches(day) {
         container.innerHTML = '';
         const matches = matchesData[day] || [];
@@ -194,6 +233,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         matches.forEach(match => {
+            // Calculate dynamic status for "today" matches only
+            // For yesterday/tomorrow, we can rely on static or just simple logic
+            let displayStatus = { text: match.status, class: '' };
+
+            if (day === 'today') {
+                // Try to parse time from "match.time" e.g. "23:00"
+                // If match.time is complex (like "09:00 PM"), we might need better parsing
+                // The current input seems to accept various formats.
+                // Let's assume standard "HH:MM" 24h format for auto-logic to work best
+
+                // Normalizing time input: remove "PM"/"AM" if present and convert roughly if needed?
+                // For now, let's try direct usage if it fits HH:MM
+                let time = match.time;
+                if (time.includes('PM')) {
+                    // Simple optional conversion logic could go here, but let's rely on admin entering 24h
+                    // or just pass it to getMatchStatus
+                }
+
+                displayStatus = getMatchStatus(time.replace(' PM', '').replace(' AM', '').trim(), match.status);
+            }
+
             const card = document.createElement('div');
             card.className = 'match-card';
             // Make the whole card clickable
@@ -206,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     homeLogo: match.homeLogo,
                     awayLogo: match.awayLogo,
                     score: match.score,
-                    status: match.status,
+                    status: displayStatus.text, // Use dynamic status
                     league: match.league,
                     channel: match.channel,
                     commentator: match.commentator,
@@ -223,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     
                     <div class="match-center">
-                        <div class="status-badge ${match.status === 'جاري الآن' ? 'live' : ''}">${match.status}</div>
+                        <div class="status-badge ${displayStatus.class}">${displayStatus.text}</div>
                         <div class="score">${match.score}</div>
                     </div>
                     

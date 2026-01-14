@@ -38,20 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.cursor = 'pointer';
 
             card.onclick = () => {
-                // Navigate to watch page with channel details
+                // Navigate to simplified channel watch page
                 const params = new URLSearchParams({
-                    home: channel.name,
-                    away: '',
-                    homeLogo: channel.logo,
-                    awayLogo: '',
-                    score: 'بث مباشر',
-                    status: 'جاري الآن',
-                    league: channel.category || 'قناة تلفزيونية',
-                    channel: channel.name,
-                    commentator: '',
+                    name: channel.name,
+                    logo: channel.logo,
+                    category: channel.category || 'قناة تلفزيونية',
                     streamUrl: channel.streamUrl
                 });
-                window.location.href = `watch.html?${params.toString()}`;
+                window.location.href = `channel-watch.html?${params.toString()}`;
             };
 
             card.innerHTML = `

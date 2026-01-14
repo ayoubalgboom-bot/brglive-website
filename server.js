@@ -292,6 +292,41 @@ const server = http.createServer(async (req, res) => {
         };
 
         const proxyReq = protocol.request(options, (proxyRes) => {
+            // Handle redirects (301, 302, 307, 308)
+            if ([301, 302, 307, 308].includes(proxyRes.statusCode) && proxyRes.headers.location) {
+                console.log(`Redirect detected: ${proxyRes.statusCode} -> ${proxyRes.headers.location}`);
+
+                // Follow the redirect
+                const redirectUrl = proxyRes.headers.location;
+                const redirectProtocol = redirectUrl.startsWith('https') ? https : http;
+                const redirectUrlParsed = url.parse(redirectUrl);
+
+                const redirectOptions = {
+                    hostname: redirectUrlParsed.hostname,
+                    port: redirectUrlParsed.port,
+                    path: redirectUrlParsed.path,
+                    method: 'GET',
+                    headers: options.headers
+                };
+
+                const redirectReq = redirectProtocol.request(redirectOptions, (redirectRes) => {
+                    res.writeHead(redirectRes.statusCode, {
+                        'Content-Type': redirectRes.headers['content-type'] || 'application/vnd.apple.mpegurl',
+                        'Access-Control-Allow-Origin': '*'
+                    });
+                    redirectRes.pipe(res);
+                });
+
+                redirectReq.on('error', (err) => {
+                    console.error('Redirect request error:', err);
+                    res.writeHead(500);
+                    res.end('Redirect request failed');
+                });
+
+                redirectReq.end();
+                return;
+            }
+
             res.writeHead(proxyRes.statusCode, {
                 'Content-Type': proxyRes.headers['content-type'] || 'application/vnd.apple.mpegurl',
                 'Access-Control-Allow-Origin': '*'

@@ -1,6 +1,100 @@
 {
   "today": [
     {
+      "home": "السنغال",
+      "away": "مصر",
+      "homeLogo": "https://yalla-live.com.co/wp-content/uploads/2025/12/5102.png",
+      "awayLogo": "https://yalla-live.com.co/wp-content/uploads/2025/12/5100.png",
+      "time": "08:00 PM",
+      "status": "08:00 PM",
+      "score": "0-0",
+      "league": "كأس أمم أفريقيا",
+      "channel": "beIN Max 1",
+      "commentator": "علي محمد علي",
+      "streamUrl": "http://het117b.ycn-redirect.com/live/33523510/index.m3u8?t=x6nYk8Mp6q24SDmKNgsheg&e=1768329443"
+    },
+    {
+      "home": "نيجيريا",
+      "away": "المغرب",
+      "homeLogo": "https://www.yalla2live.com/wp-content/uploads/2026/01/alba_img_6966647571487.png",
+      "awayLogo": "https://www.yalla2live.com/wp-content/uploads/2026/01/alba_img_696664757dd8b.png",
+      "time": "11:00 PM",
+      "status": "11:00 PM",
+      "score": "0-0",
+      "league": "كأس أمم أفريقيا",
+      "channel": "beIN Max 1",
+      "commentator": "جواد بدة",
+      "streamUrl": "http://het117b.ycn-redirect.com/live/33523510/index.m3u8?t=x6nYk8Mp6q24SDmKNgsheg&e=1768329443"
+    },
+    {
+      "home": "استراليا تحت 23",
+      "away": "العراق تحت 23",
+      "homeLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2026/01/28921.png",
+      "awayLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2025/12/28913.png",
+      "time": "02:30 PM",
+      "status": "02:30 PM",
+      "score": "0-0",
+      "league": "آسيا, كأس آسيا تحت 23 سنة - المجموعة د",
+      "channel": "غير معروف",
+      "commentator": "غير معروف",
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    },
+    {
+      "home": "الصين تحت 23",
+      "away": "تايلاند تحت 23",
+      "homeLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2026/01/25010.png",
+      "awayLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2026/01/28918.png",
+      "time": "02:30 PM",
+      "status": "02:30 PM",
+      "score": "0-0",
+      "league": "آسيا, كأس آسيا تحت 23 سنة - المجموعة د",
+      "channel": "غير معروف",
+      "commentator": "غير معروف",
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    },
+    {
+      "home": "الفيحاء",
+      "away": "القادسية",
+      "homeLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2025/10/20733.png",
+      "awayLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2025/10/8947.png",
+      "time": "05:45 PM",
+      "status": "05:45 PM",
+      "score": "0-0",
+      "league": "السعودية, الدوري السعودي",
+      "channel": "غير معروف",
+      "commentator": "غير معروف",
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    },
+    {
+      "home": "بارما",
+      "away": "نابولي",
+      "homeLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2025/10/241-1.png",
+      "awayLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2025/10/234.png",
+      "time": "08:30 PM",
+      "status": "08:30 PM",
+      "score": "0-0",
+      "league": "إيطاليا, الدوري الإيطالي",
+      "channel": "غير معروف",
+      "commentator": "غير معروف",
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    },
+    {
+      "home": "سانت باولي",
+      "away": "فولفسبورج",
+      "homeLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2025/10/359-1.png",
+      "awayLogo": "https://www.yalla-shootdz.com/wp-content/uploads/2025/10/339-1.png",
+      "time": "20:30",
+      "status": "20:30",
+      "score": "0-0",
+      "league": "ألمانيا, الدوري الألماني",
+      "channel": "غير معروف",
+      "commentator": "غير معروف",
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    }
+  ],
+  "tomorrow": [],
+  "yesterday": [
+    {
       "home": "برشلونة",
       "away": "ريال مدريد",
       "homeLogo": "assets/barcelona.png",
@@ -58,7 +152,7 @@
       "homeLogo": "https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/226-150x150.png",
       "awayLogo": "https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/290.png",
       "time": "08:45 PM",
-      "status": "08:45 PM",
+      "status": "انتهت",
       "score": "0-0",
       "league": "إيطاليا, الدوري الإيطالي",
       "channel": "Starzplay",
@@ -71,7 +165,7 @@
       "homeLogo": "https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/135-1-135x150.png",
       "awayLogo": "https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/158-1.png",
       "time": "09:00 PM",
-      "status": "09:00 PM",
+      "status": "انتهت",
       "score": "0-0",
       "league": "إسبانيا, الدوري الإسباني",
       "channel": "beIN Sports 3 HD",
@@ -84,14 +178,12 @@
       "homeLogo": "https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/480-150x150.png",
       "awayLogo": "https://i0.wp.com/www.yalla1shoot.com/wp-content/uploads/2025/08/6075.png",
       "time": "09:10 PM",
-      "status": "09:10 PM",
+      "status": "انتهت",
       "score": "0-0",
       "league": "فرنسا, كأس فرنسا - دور الـ 32",
       "channel": "beIN SPORTS HD 1",
       "commentator": "غير معروف",
-      "streamUrl": "https://dnlyt.yallashootttv.com/hls/ch1/master.m3u8"
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
     }
-  ],
-  "tomorrow": [],
-  "yesterday": []
+  ]
 }

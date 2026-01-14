@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاهدة القناة - brglive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/watch.css">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container header-content">
+            <button id="menu-toggle" aria-current="false" aria-label="Menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <a href="index.html" class="logo">
+                <img src="assets/logo.png" alt="brglive logo" id="site-logo" style="height: 50px;">
+            </a>
+
+            <button id="theme-toggle" aria-label="Toggle Dark Mode">
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                </svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="display:none;">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Watch Content -->
+    <main class="container">
+
+        <main class="main-content">
+            <!-- Simple Channel Header -->
+            <div
+                style="text-align: center; padding: 30px 0; background: var(--card-bg); border-radius: 12px; margin: 20px 0;">
+                <img id="channel-logo" src="" alt="Channel Logo"
+                    style="width: 100px; height: 100px; object-fit: contain; margin-bottom: 15px;"
+                    onerror="this.src='assets/logo.png'">
+                <h1 id="channel-name"
+                    style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin: 0;">--</h1>
+                <p id="channel-category" style="color: var(--text-secondary); margin-top: 8px; font-size: 1rem;">--</p>
+            </div>
+
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html">الرئيسية</a> &gt; <a href="channels.html">القنوات المباشرة</a> &gt; <span
+                        id="breadcrumb-name">مشاهدة القناة</span>
+                </div>
+
+                <!-- Video Player -->
+                <div class="video-container">
+                    <div class="player-overlay" onclick="unmuteVideo()">
+                        <div class="unmute-btn">🔊 Click to Unmute</div>
+                    </div>
+                    <!-- Video Player injected by JS -->
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="main-footer">
+            <div class="container">
+                <div class="footer-links">
+                    <a href="index.html">مباريات اليوم</a>
+                    <a href="channels.html">القنوات المباشرة</a>
+                    <a href="#">اتصل بنا</a>
+                </div>
+                <p class="copyright">© 2026 brglive. جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
+
+        <script src="js/config.js"></script>
+        <script src="js/main.js"></script>
+        <script>
+            // Global variable for current stream
+            let currentStreamUrl = '';
+
+            // Unmute and play function
+            function unmuteVideo() {
+                const video = document.getElementById('video-player');
+                if (video) {
+                    video.muted = false;
+                    video.play();
+                    document.querySelector('.player-overlay').style.display = 'none';
+                }
+            }
+
+            // Dynamic Channel Data Loading
+            document.addEventListener('DOMContentLoaded', () => {
+                const params = new URLSearchParams(window.location.search);
+                const channelName = params.get('name');
+                const channelLogo = params.get('logo');
+                const channelCategory = params.get('category');
+                const streamUrl = params.get('streamUrl');
+
+                // Update page elements
+                if (channelName) {
+                    document.getElementById('channel-name').textContent = channelName;
+                    document.getElementById('breadcrumb-name').textContent = channelName;
+                    document.title = `${channelName} - brglive`;
+                }
+
+                if (channelLogo) {
+                    document.getElementById('channel-logo').src = channelLogo;
+                }
+
+                if (channelCategory) {
+                    document.getElementById('channel-category').textContent = channelCategory;
+                }
+
+                // Play stream
+                if (streamUrl) {
+                    playStream(streamUrl);
+                } else {
+                    alert('لم يتم توفير رابط البث');
+                }
+            });
+
+            // Helper function to play stream
+            function playStream(url) {
+                currentStreamUrl = url;
+
+                const container = document.querySelector('.video-container');
+                const overlay = container.querySelector('.player-overlay');
+
+                // Remove existing player elements
+                const existingIframe = container.querySelector('iframe');
+                const existingVideo = container.querySelector('video');
+                if (existingIframe) existingIframe.remove();
+                if (existingVideo) existingVideo.remove();
+
+                if (url.includes('.m3u8')) {
+                    // Route m3u8 streams through proxy to handle headers
+                    const proxyUrl = CONFIG.getProxyUrl(url);
+
+                    // Create Video Element
+                    const video = document.createElement('video');
+                    video.id = 'video-player';
+                    video.controls = true;
+                    video.style.width = '100%';
+                    video.style.height = '100%';
+                    video.style.backgroundColor = '#000';
+                    container.appendChild(video);
+
+                    if (Hls.isSupported()) {
+                        const hls = new Hls({
+                            debug: false,
+                            enableWorker: true,
+                            lowLatencyMode: true,
+                            backBufferLength: 90,
+                            xhrSetup: function (xhr, url) {
+                                xhr.setRequestHeader('Bypass-Tunnel-Reminder', 'true');
+                            }
+                        });
+                        hls.loadSource(proxyUrl);
+                        hls.attachMedia(video);
+                        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                            console.log('Stream loaded successfully via proxy');
+                            // Auto-play muted
+                            video.muted = true;
+                            video.play().catch(e => console.log('Autoplay blocked:', e));
+                        });
+                        hls.on(Hls.Events.ERROR, function (event, data) {
+                            console.error('HLS error:', data);
+                            if (data.fatal) {
+                                switch (data.type) {
+                                    case Hls.ErrorTypes.NETWORK_ERROR:
+                                        console.log('Network error, trying to recover...');
+                                        hls.startLoad();
+                                        break;
+                                    case Hls.ErrorTypes.MEDIA_ERROR:
+                                        console.log('Media error, trying to recover...');
+                                        hls.recoverMediaError();
+                                        break;
+                                    default:
+                                        console.log('Fatal error, cannot recover');
+                                        hls.destroy();
+                                        break;
+                                }
+                            }
+                        });
+                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                        video.src = proxyUrl;
+                    }
+                } else {
+                    // Create Iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.src = url;
+                    iframe.frameBorder = '0';
+                    iframe.allowFullscreen = true;
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100%';
+                    container.appendChild(iframe);
+                }
+            }
+        </script>
+</body>
+
+</html>

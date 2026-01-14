@@ -1,18 +1,18 @@
 {
-    "channels": [
-        {
-            "id": "1",
-            "name": "Bein Sports Max 1 HD",
-            "logo": "https://i.imgur.com/pJm6FXL.png",
-            "category": "Sports",
-            "streamUrl": "http://iptv.ndasat.xyz:88/live/559684668698871/559684668698871/98611.m3u8"
-        },
-        {
-            "id": "2",
-            "name": "beIN Sports 1 HD",
-            "logo": "https://i.imgur.com/RLgFhq7.png",
-            "category": "Sports",
-            "streamUrl": "https://dnlyt.yallashootttv.com/hls/ch1/master.m3u8"
-        }
-    ]
+  "channels": [
+    {
+      "id": "1",
+      "name": "Bein Sports Max 1 HD",
+      "logo": "https://safa.ps/thumb/w1000/uploads/images/2022/12/NbQZz.png",
+      "category": "Sports",
+      "streamUrl": "http://iptv.ndasat.xyz:88/live/559684668698871/559684668698871/98611.m3u8"
+    },
+    {
+      "id": "2",
+      "name": "beIN Sports 1 HD",
+      "logo": "https://play-lh.googleusercontent.com/YG8wDxX96WM1KYl7IuQA0gyoiEYj7OyAon2Z_2javA0mMckRPLoNTXx5u0fe3iWL1nc",
+      "category": "Sports",
+      "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    }
+  ]
 }

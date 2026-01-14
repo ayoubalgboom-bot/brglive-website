@@ -1,3 +1,5 @@
 @echo off
-PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& './auto_restore.ps1'"
+title BRG Live - Auto Start
+echo Starting BRG Live Auto-Restore System...
+PowerShell -NoProfile -ExecutionPolicy Bypass -File "auto_restore_fixed.ps1"
 pause
