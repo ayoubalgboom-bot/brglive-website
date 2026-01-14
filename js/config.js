@@ -9,7 +9,7 @@ const CONFIG = (() => {
         window.location.hostname === '127.0.0.1';
 
     // Production proxy URL - UPDATE THIS after deploying to Render
-    const PRODUCTION_PROXY_URL = 'https://fri-retention-southampton-liquid.trycloudflare.com';// Cloudflare Tunnel URL
+    const PRODUCTION_PROXY_URL = 'https://big-specs-rules-wind.trycloudflare.com';// Cloudflare Tunnel URL
 
     // Production GitHub Pages URL for matches.json
     const PRODUCTION_MATCHES_URL = 'https://ayoubalgboom-bot.github.io/brglive-website/matches.json'; // Change this
