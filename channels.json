@@ -13,6 +13,13 @@
       "logo": "https://play-lh.googleusercontent.com/YG8wDxX96WM1KYl7IuQA0gyoiEYj7OyAon2Z_2javA0mMckRPLoNTXx5u0fe3iWL1nc",
       "category": "Sports",
       "streamUrl": "http://het129c.ycn-redirect.com/live/918454578001/index.m3u8?t=dt_PzZsOxY6_xqEQ7PGKtw&e=1768111577"
+    },
+    {
+      "name": "beinmax",
+      "category": "sport",
+      "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
+      "streamUrl": "https://prod-fastly-us-west-2.video.pscp.tv/Transcoding/v1/hls/mb8uoWvFhgbt9u60Z-c_Mx2d2TghCZubeEX49sfI1-ORANmzoTFcnhE5qQHc_MG0p7acY4M3ATitXiMj8-OWSg/transcode/us-west-2/periscope-replay-direct-prod-us-west-2-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ18xMDgwcDMwXzEwIiwiSGVpZ2h0IjoxMDgwLCJLYnBzIjo1NTAwLCJXaWR0aCI6MTkyMH0.OImMZabKYJ0cs9CnIapU-4aBk6KNBiJxi1hh-6l4BZ4/dynamic_highlatency.m3u8?type=live",
+      "id": "3"
     }
   ]
 }
