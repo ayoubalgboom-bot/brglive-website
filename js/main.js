@@ -326,11 +326,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fetch News Data
     async function fetchNews() {
         try {
-            const source = CONFIG.getApiUrl ? CONFIG.getApiUrl().replace('/matches', '/news') : 'http://localhost:3000/api/news';
-            // Fallback if CONFIG isn't fully ready or compatible
-            const safeSource = source.startsWith('http') ? source : '/api/news';
+            // Use apiBase from config, replacing /matches with /news
+            // apiBase is like "http://.../api/matches"
+            const apiBase = CONFIG.apiBase || 'http://localhost:3000/api/matches';
+            const source = apiBase.replace('/matches', '/news');
 
-            const response = await fetch(safeSource);
+            const response = await fetch(source);
             if (response.ok) {
                 const data = await response.json();
                 return data.news || [];
