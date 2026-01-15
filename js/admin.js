@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Use API base from config, fallback to localhost if direct access
-    const API_BASE = (window.CONFIG && window.CONFIG.apiBase) || 'http://localhost:3000/api/matches';
+    const API_BASE = (window.CONFIG && window.CONFIG.apiBase) || '/api/matches';
 
     // Form elements
     const form = document.getElementById('match-form');
