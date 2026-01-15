@@ -13,7 +13,7 @@ const server = http.createServer((req, res) => {
 
     // Global CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
     // Handle preflight requests
@@ -23,21 +23,104 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // API: Matches (Dynamic Read)
-    if (pathname === '/api/matches') {
+    // API: Matches (Dynamic Read/Write)
+    if (pathname.startsWith('/api/matches')) {
         const matchesFile = path.join(__dirname, 'matches.json');
-        fs.readFile(matchesFile, 'utf8', (err, data) => {
-            if (err) {
-                console.error('Error reading matches.json:', err);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                // Return empty structure on error to prevent frontend crash
-                res.end(JSON.stringify({ today: [], yesterday: [], tomorrow: [] }));
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(data);
+
+        // Helper: Read Body
+        const readBody = () => new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk);
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
         });
-        return;
+
+        // Helper: Read Matches
+        const readMatches = () => {
+            try {
+                if (fs.existsSync(matchesFile)) {
+                    return JSON.parse(fs.readFileSync(matchesFile, 'utf8'));
+                }
+            } catch (e) { console.error(e); }
+            return { today: [], yesterday: [], tomorrow: [] };
+        };
+
+        // Helper: Save Matches
+        const saveMatches = (data) => {
+            fs.writeFileSync(matchesFile, JSON.stringify(data, null, 2));
+        };
+
+        // Helper function to handle response
+        const sendJSON = (code, data) => {
+            res.writeHead(code, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(data));
+        };
+
+        // 1. Shift Day: POST /api/matches/shift
+        if (pathname === '/api/matches/shift' && req.method === 'POST') {
+            const data = readMatches();
+            data.yesterday = [...(data.today || [])];
+            data.today = [...(data.tomorrow || [])];
+            data.tomorrow = [];
+            saveMatches(data);
+            return sendJSON(200, { success: true });
+        }
+
+        // Parse path parts: /api/matches/today/0 -> ["", "api", "matches", "today", "0"]
+        const parts = pathname.split('/').filter(p => p.length > 0);
+        // parts[0]="api", parts[1]="matches", parts[2]=day, parts[3]=index
+        const paramDay = parts[2];
+        const paramIndex = parts[3];
+
+        // GET: List Matches
+        if (pathname === '/api/matches' && req.method === 'GET') {
+            const data = readMatches();
+            return sendJSON(200, data);
+        }
+
+        // 2. Add Match: POST /api/matches/:day
+        if (paramDay && !paramIndex && req.method === 'POST') {
+            readBody().then(body => {
+                const newMatch = JSON.parse(body);
+                const data = readMatches();
+                if (!data[paramDay]) data[paramDay] = [];
+                data[paramDay].push(newMatch);
+                saveMatches(data);
+                sendJSON(201, { success: true });
+            }).catch(err => sendJSON(500, { error: err.message }));
+            return;
+        }
+
+        // 3. Update Match: PUT /api/matches/:day/:index
+        if (paramDay && paramIndex !== undefined && req.method === 'PUT') {
+            const index = parseInt(paramIndex);
+            readBody().then(body => {
+                const updatedMatch = JSON.parse(body);
+                const data = readMatches();
+                if (data[paramDay] && data[paramDay][index]) {
+                    data[paramDay][index] = updatedMatch;
+                    saveMatches(data);
+                    sendJSON(200, { success: true });
+                } else {
+                    sendJSON(404, { error: 'Match not found' });
+                }
+            }).catch(err => sendJSON(500, { error: err.message }));
+            return;
+        }
+
+        // 4. Delete Match: DELETE /api/matches/:day/:index
+        if (paramDay && paramIndex !== undefined && req.method === 'DELETE') {
+            const index = parseInt(paramIndex);
+            const data = readMatches();
+            if (data[paramDay] && data[paramDay][index]) {
+                data[paramDay].splice(index, 1);
+                saveMatches(data);
+                sendJSON(200, { success: true });
+            } else {
+                sendJSON(404, { error: 'Match not found' });
+            }
+            return;
+        }
     }
 
     // API: Channels (Dynamic Read)
@@ -88,6 +171,7 @@ const server = http.createServer((req, res) => {
             // Handle Redirects
             if ([301, 302, 307, 308].includes(proxyRes.statusCode) && proxyRes.headers.location) {
                 const redirectUrl = proxyRes.headers.location;
+                // Encode the redirect URL properly for the proxy
                 res.writeHead(302, { 'Location': `/proxy?url=${encodeURIComponent(redirectUrl)}` });
                 res.end();
                 return;
@@ -109,14 +193,13 @@ const server = http.createServer((req, res) => {
                         line = line.trim();
                         if (!line || line.startsWith('#')) return line;
 
-                        // Construct absolute URL for segments
+                        // Construct absolute URL
                         let absoluteUrl = line;
                         if (!line.startsWith('http')) {
                             absoluteUrl = baseUrl + line;
                         }
 
-                        // Proxy the segment URL
-                        // Use relative proxy path to work on any host
+                        // Proxy
                         return `/proxy?url=${encodeURIComponent(absoluteUrl)}`;
                     });
                     res.end(modifiedLines.join('\n'));
