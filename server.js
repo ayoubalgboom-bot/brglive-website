@@ -13,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 const MATCHES_FILE = path.join(__dirname, 'matches.json');
 const CHANNELS_FILE = path.join(__dirname, 'channels.json');
+const NEWS_FILE = path.join(__dirname, 'news.json');
 
 // Initialize matches data
 let matchesData = {
@@ -24,6 +25,11 @@ let matchesData = {
 // Initialize channels data
 let channelsData = {
     channels: []
+};
+
+// Initialize news data
+let newsData = {
+    news: []
 };
 
 // Load matches from file
@@ -93,6 +99,43 @@ function saveChannels() {
         console.log('💾 Channels saved to file');
     } catch (error) {
         console.error('Error saving channels:', error);
+    }
+}
+
+// Load news from file
+function loadNews() {
+    try {
+        if (fs.existsSync(NEWS_FILE)) {
+            const data = fs.readFileSync(NEWS_FILE, 'utf8');
+            newsData = JSON.parse(data);
+            console.log('✅ News loaded from file');
+        } else {
+            // Create default news file with sample data
+            newsData = {
+                news: [
+                    {
+                        id: "1",
+                        title: "ملخص مباراة الامس في الدوري الانجليزي",
+                        image: "assets/news_stadium.png",
+                        date: "2026-01-10",
+                        content: "شهدت مباراة الأ أمس إثارة كبيرة بين الفريقين..."
+                    }
+                ]
+            };
+            saveNews();
+        }
+    } catch (error) {
+        console.error('Error loading news:', error);
+    }
+}
+
+// Save news to file
+function saveNews() {
+    try {
+        fs.writeFileSync(NEWS_FILE, JSON.stringify(newsData, null, 2));
+        console.log('💾 News saved to file');
+    } catch (error) {
+        console.error('Error saving news:', error);
     }
 }
 
@@ -258,6 +301,65 @@ const server = http.createServer(async (req, res) => {
         } else {
             res.writeHead(404, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Channel not found' }));
+        }
+        return;
+    }
+
+    // ========== NEWS API ENDPOINTS ==========
+
+    // GET all news
+    if (pathname === '/api/news' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(newsData));
+        return;
+    }
+
+    // POST new news
+    if (pathname === '/api/news' && req.method === 'POST') {
+        const newItem = await parseBody(req);
+        // Generate ID
+        const newId = newsData.news.length > 0
+            ? String(Math.max(...newsData.news.map(n => parseInt(n.id))) + 1)
+            : '1';
+        newItem.id = newId;
+        newsData.news.push(newItem);
+        saveNews();
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, news: newItem }));
+        return;
+    }
+
+    // PUT update news by ID
+    if (pathname.match(/^\/api\/news\/\d+$/) && req.method === 'PUT') {
+        const newsId = pathname.split('/')[3];
+        const itemData = await parseBody(req);
+        const index = newsData.news.findIndex(n => n.id === newsId);
+
+        if (index !== -1) {
+            newsData.news[index] = { ...newsData.news[index], ...itemData, id: newsId };
+            saveNews();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'News not found' }));
+        }
+        return;
+    }
+
+    // DELETE news by ID
+    if (pathname.match(/^\/api\/news\/\d+$/) && req.method === 'DELETE') {
+        const newsId = pathname.split('/')[3];
+        const index = newsData.news.findIndex(n => n.id === newsId);
+
+        if (index !== -1) {
+            newsData.news.splice(index, 1);
+            saveNews();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'News not found' }));
         }
         return;
     }
@@ -440,6 +542,7 @@ const server = http.createServer(async (req, res) => {
 // Load matches on startup
 loadMatches();
 loadChannels();
+loadNews();
 
 server.listen(PORT, () => {
     console.log(`\n🚀 Server running on http://localhost:${PORT}`);

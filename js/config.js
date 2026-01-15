@@ -6,7 +6,8 @@
 const CONFIG = (() => {
     // Detect environment
     const isLocalhost = window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1';
+        window.location.hostname === '127.0.0.1' ||
+        window.location.protocol === 'file:';
 
     // Production proxy URL - UPDATE THIS after deploying to Render
     const PRODUCTION_PROXY_URL = 'https://brglive-online.onrender.com';// Render URL

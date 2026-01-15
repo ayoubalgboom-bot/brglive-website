@@ -192,6 +192,53 @@
                 <div class="loading">جاري تحميل القنوات...</div>
             </div>
         </section>
+
+        <!-- News Management Section -->
+        <section class="admin-section">
+            <h2 class="section-title">📰 إدارة الأخبار</h2>
+
+            <!-- News Form -->
+            <form id="news-form" class="match-form">
+                <input type="hidden" id="news-edit-mode" value="false">
+                <input type="hidden" id="news-edit-id" value="">
+
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="news-title">عنوان الخبر</label>
+                        <input type="text" id="news-title" required placeholder="مثال: ملخص مباراة الأمس">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="news-date">تاريخ الخبر</label>
+                        <input type="date" id="news-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="news-image">رابط الصورة</label>
+                        <input type="text" id="news-image" required placeholder="https://example.com/image.png">
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="news-content">تفاصيل الخبر</label>
+                    <textarea id="news-content" rows="6" required placeholder="اكتب تفاصيل الخبر هنا..."
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: var(--input-bg); color: var(--text-primary); font-family: inherit;"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" id="news-submit-btn">إضافة الخبر</button>
+                    <button type="button" class="btn-secondary" id="news-cancel-btn" style="display:none;">إلغاء
+                        التعديل</button>
+                </div>
+            </form>
+
+            <!-- News List -->
+            <h3 class="section-title" style="margin-top: 40px; font-size: 1.4rem;">الأخبار الحالية</h3>
+            <div id="news-list" class="matches-list-admin">
+                <div class="loading">جاري تحميل الأخبار...</div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->

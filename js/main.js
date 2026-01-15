@@ -319,12 +319,99 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Link news cards to news.html
-    const newsCards = document.querySelectorAll('.news-card');
-    newsCards.forEach(card => {
-        card.addEventListener('click', () => {
-            window.location.href = 'news.html';
+    // Link news cards to news.html (handled dynamically now)
+
+    // ========== NEWS LOGIC ==========
+
+    // Fetch News Data
+    async function fetchNews() {
+        try {
+            const source = CONFIG.getApiUrl ? CONFIG.getApiUrl().replace('/matches', '/news') : 'http://localhost:3000/api/news';
+            // Fallback if CONFIG isn't fully ready or compatible
+            const safeSource = source.startsWith('http') ? source : '/api/news';
+
+            const response = await fetch(safeSource);
+            if (response.ok) {
+                const data = await response.json();
+                return data.news || [];
+            }
+        } catch (error) {
+            console.error('Error fetching news:', error);
+        }
+        return [];
+    }
+
+    // Render News Grid (for index.html)
+    async function renderNewsGrid() {
+        const newsGrid = document.querySelector('.news-grid');
+        if (!newsGrid) return; // Not on index.html
+
+        newsGrid.innerHTML = '<div class="loading">جاري تحميل الأخبار...</div>';
+
+        const newsData = await fetchNews();
+
+        if (newsData.length === 0) {
+            newsGrid.innerHTML = '<div class="no-news">لا توجد أخبار حالياً</div>';
+            return;
+        }
+
+        newsGrid.innerHTML = ''; // Clear loading
+
+        newsData.forEach(item => {
+            const article = document.createElement('article');
+            article.className = 'news-card';
+            article.innerHTML = `
+                <img src="${item.image}" alt="${item.title}" class="news-image" onerror="this.src='assets/news_stadium.png'">
+                <h3>${item.title}</h3>
+            `;
+            article.addEventListener('click', () => {
+                window.location.href = `news.html?id=${item.id}`;
+            });
+            newsGrid.appendChild(article);
         });
-    });
+    }
+
+    // Render News Detail (for news.html)
+    async function renderNewsDetail() {
+        const newsContainer = document.querySelector('.news-detail-container');
+        if (!newsContainer) return; // Not on news.html
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+
+        if (!newsId) {
+            // If no ID, maybe forward to index or show error? 
+            // Or just keep the hardcoded one (not ideal).
+            // Let's just return to keep defaults or show message.
+            return;
+        }
+
+        const newsData = await fetchNews();
+        const newsItem = newsData.find(n => n.id === newsId);
+
+        if (newsItem) {
+            // Update placeholders
+            const titleEl = document.querySelector('.news-title');
+            const metaDateEl = document.querySelector('.news-meta span:first-child');
+            const imageEl = document.querySelector('.news-main-image');
+            const contentEl = document.querySelector('.news-content');
+
+            if (titleEl) titleEl.textContent = newsItem.title;
+            if (metaDateEl) metaDateEl.textContent = `📅 ${newsItem.date}`;
+            if (imageEl) {
+                imageEl.src = newsItem.image;
+                imageEl.alt = newsItem.title;
+            }
+            if (contentEl) {
+                // Assuming content is plain text or simple HTML. 
+                // Since we used textarea, it might be newlines.
+                contentEl.innerHTML = newsItem.content.split('\n').map(p => `<p>${p}</p>`).join('');
+            }
+        }
+    }
+
+    // Initialize News
+    renderNewsGrid();
+    renderNewsDetail();
 
 });
