@@ -21,28 +21,28 @@ http://localhost:3000/admin.html
 
 ---
 
-### 2️⃣ Deploy to Website
+### 2️⃣ Deploy to Website (Automatic)
 
-**Simply double-click:**
-```
-DEPLOY_TO_WEBSITE.bat
-```
+**Start the Auto-Deploy Monitor:**
+Double-click: `START_AUTO_DEPLOY.bat`
 
-This script will:
-- ✅ Show you what changed (channel count, etc.)
-- ✅ Ask for confirmation
-- ✅ Push to GitHub
-- ✅ Your website updates in 1-2 minutes
+Keep this window open! It will:
+- 👁️ Watch for changes to channels or matches
+- 🚀 Automatically push to GitHub when you save
+- ✅ Update your website in 1-2 minutes
 
 ---
 
 ## Important Files
 
 **DO NOT RUN THESE** (they will conflict with Render):
-- ❌ `START_AUTO_MODE.bat`
+- ❌ `START_AUTO_MODE.bat` (Old - deletes data!)
 - ❌ `auto_restore.ps1`
 - ❌ `auto_restore_fixed.ps1`
-- ❌ `start_cloudflare.bat`
+
+**Use These Instead:**
+- ✅ `START_AUTO_DEPLOY.bat` (Safe - creates backup & pushes updates)
+- ✅ `node server.js` (To run admin panel)
 
 **Your Deployment:**
 - ✅ Website: `https://brglive.abrdns.com`
@@ -53,9 +53,9 @@ This script will:
 ## That's It! 🎉
 
 Your workflow is now:
-1. Edit via admin panel (local)
-2. Click `DEPLOY_TO_WEBSITE.bat`
-3. Wait 1-2 minutes
-4. Your website is updated!
+1. Run `START_AUTO_DEPLOY.bat` (keep open)
+2. Run `node server.js`
+3. Edit via admin panel
+4. Changes go live **automatically!**
 
 No more data loss, no more changing URLs!
