@@ -27,6 +27,7 @@
 
     <script src="https://pl28468203.effectivegatecpm.com/c2/a8/a5/c2a8a5e4c3ca5bb2f09f4da484332995.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mpegts.js@latest"></script>
 </head>
 
 <body>
@@ -272,6 +273,7 @@
                         container.appendChild(video);
 
                         if (isM3u8 && Hls.isSupported()) {
+                            // Use HLS.js for m3u8 files
                             const hls = new Hls({
                                 debug: false,
                                 enableWorker: true,
@@ -285,8 +287,7 @@
                             hls.attachMedia(video);
                             hls.attachMedia(video);
                             hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                                console.log('Stream loaded successfully via proxy');
-                                // Auto-play muted
+                                console.log('HLS stream loaded successfully');
                                 video.muted = true;
                                 video.play().catch(e => console.log('Autoplay blocked:', e));
                             });
@@ -309,9 +310,30 @@
                                     }
                                 }
                             });
+                        } else if ((isTs || isMpeg) && typeof mpegts !== 'undefined' && mpegts.getFeatureList().mseLivePlayback) {
+                            // Use mpegts.js for .ts files (MPEG-TS streams)
+                            const player = mpegts.createPlayer({
+                                type: 'mpegts',
+                                isLive: true,
+                                url: proxyUrl
+                            }, {
+                                enableWorker: true,
+                                enableStashBuffer: true,
+                                stashInitialSize: 128,
+                                autoCleanupSourceBuffer: true
+                            });
+                            player.attachMediaElement(video);
+                            player.load();
+                            video.muted = true;
+                            player.on(mpegts.Events.LOADING_COMPLETE, () => {
+                                console.log('MPEG-TS stream loaded successfully');
+                            });
+                            player.on(mpegts.Events.ERROR, (event, data) => {
+                                console.error('MPEG-TS error:', event, data);
+                            });
+                            video.play().catch(e => console.log('Autoplay blocked:', e));
                         } else {
-                            // For TS files or browsers with native HLS support (Safari)
-                            // Or simple proxying of insecure streams
+                            // Fallback: try native playback for other formats or Safari
                             video.src = proxyUrl;
                             video.muted = true;
                             video.play().catch(e => console.log('Autoplay blocked:', e));
