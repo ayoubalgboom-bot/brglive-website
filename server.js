@@ -123,20 +123,110 @@ const server = http.createServer((req, res) => {
         }
     }
 
-    // API: Channels (Dynamic Read)
-    if (pathname === '/api/channels') {
+    // API: Channels (Dynamic Read/Write)
+    if (pathname.startsWith('/api/channels')) {
         const channelsFile = path.join(__dirname, 'channels.json');
-        fs.readFile(channelsFile, 'utf8', (err, data) => {
-            if (err) {
-                console.error('Error reading channels.json:', err);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify([]));
-                return;
-            }
+
+        // Helper: Read Channels
+        const readChannels = () => {
+            try {
+                if (fs.existsSync(channelsFile)) {
+                    return JSON.parse(fs.readFileSync(channelsFile, 'utf8'));
+                }
+            } catch (e) { console.error(e); }
+            return { channels: [] };
+        };
+
+        // Helper: Save Channels
+        const saveChannels = (data) => {
+            fs.writeFileSync(channelsFile, JSON.stringify(data, null, 2));
+        };
+
+        const parts = pathname.split('/').filter(p => p.length > 0);
+        // parts[0]="api", parts[1]="channels", parts[2]=id
+        const paramId = parts[2];
+
+        // GET: List Channels
+        if (pathname === '/api/channels' && req.method === 'GET') {
+            const data = readChannels();
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(data);
-        });
-        return;
+            res.end(JSON.stringify(data));
+            return;
+        }
+
+        // POST: Add Channel
+        if (pathname === '/api/channels' && req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => body += chunk);
+            req.on('end', () => {
+                try {
+                    const newChannel = JSON.parse(body);
+                    const data = readChannels();
+
+                    // Generate ID if missing
+                    if (!newChannel.id) {
+                        newChannel.id = Date.now().toString();
+                    }
+
+                    if (!data.channels) data.channels = [];
+                    data.channels.push(newChannel);
+
+                    saveChannels(data);
+                    res.writeHead(201, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true, channel: newChannel }));
+                } catch (e) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: e.message }));
+                }
+            });
+            return;
+        }
+
+        // PUT: Update Channel
+        if (paramId && req.method === 'PUT') {
+            let body = '';
+            req.on('data', chunk => body += chunk);
+            req.on('end', () => {
+                try {
+                    const updatedChannel = JSON.parse(body);
+                    const data = readChannels();
+
+                    const index = data.channels.findIndex(c => c.id === paramId);
+                    if (index !== -1) {
+                        // Preserve ID
+                        updatedChannel.id = paramId;
+                        data.channels[index] = updatedChannel;
+                        saveChannels(data);
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ success: true }));
+                    } else {
+                        res.writeHead(404, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: 'Channel not found' }));
+                    }
+                } catch (e) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: e.message }));
+                }
+            });
+            return;
+        }
+
+        // DELETE: Delete Channel
+        if (paramId && req.method === 'DELETE') {
+            const data = readChannels();
+            const index = data.channels.findIndex(c => c.id === paramId);
+
+            if (index !== -1) {
+                data.channels.splice(index, 1);
+                saveChannels(data);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } else {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Channel not found' }));
+            }
+            return;
+        }
     }
 
     // Proxy Route
