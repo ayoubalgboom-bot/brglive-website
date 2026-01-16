@@ -93,19 +93,27 @@ else {
 
 Write-Host "[5/5] Publishing to Internet (GitHub)..." -ForegroundColor Yellow
 
-# Robust Git Sync:
-# 1. Fetch latest from remote to know what's there
+# Safe Git Sync - Only updates config.js, preserves matches.json and channels.json
+# 1. Fetch latest from remote
 git fetch origin 2>&1 | Out-Null
 
-# 2. Reset local index to match remote (keeps your file changes in working dir)
-git reset --mixed origin/main 2>&1 | Out-Null
-
-# 3. Add the config file (which has the NEW url)
+# 2. Stage ONLY config.js (don't touch other files like matches.json or channels.json)
 git add js/config.js
 
-# 4. Commit and push
-git commit -m "Auto-restore: Update tunnel URL to $foundUrl"
-git push origin main --force
+# 3. Check if there are changes to commit
+git diff --staged --quiet
+if ($LASTEXITCODE -ne 0) {
+    # 4. Commit the config change
+    git commit -m "Auto-restore: Update tunnel URL to $foundUrl"
+    
+    # 5. Pull and push (rebase to avoid merge commits)
+    git pull --rebase origin main 2>&1 | Out-Null
+    git push origin main
+    Write-Host "      Config pushed to GitHub." -ForegroundColor Green
+}
+else {
+    Write-Host "      No config changes to commit." -ForegroundColor Gray
+}
 
 Write-Host ""
 Write-Host "================================================" -ForegroundColor Cyan
