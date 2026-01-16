@@ -34,6 +34,27 @@
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
       "streamUrl": "http://het126b.ycn-redirect.com/live/645587700/index.m3u8?t=XfdtWNIlyuIBRecq7nM2QQ&e=1768542162",
       "id": "1768584281252"
+    },
+    {
+      "name": "beinsport 4",
+      "category": "sport",
+      "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
+      "streamUrl": "http://het105b.ycn-redirect.com/live/9787488847/index.m3u8?t=i44NiuvP8ci0ltOM6s52wg&e=1768542353",
+      "id": "1768584670027"
+    },
+    {
+      "name": "beinsport 5",
+      "category": "sport",
+      "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
+      "streamUrl": "http://het101b.ycn-redirect.com/live/610303030/index.m3u8?t=ywdukc8IrU4XpCm2Iz89Iw&e=1768155540",
+      "id": "1768584731082"
+    },
+    {
+      "name": "beinsport 6",
+      "category": "sport",
+      "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
+      "streamUrl": "http://het101b.ycn-redirect.com/live/610303030/index.m3u8?t=ywdukc8IrU4XpCm2Iz89Iw&e=1768155540",
+      "id": "1768584757401"
     }
   ]
 }
