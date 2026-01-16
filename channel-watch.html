@@ -168,8 +168,14 @@
                 if (existingIframe) existingIframe.remove();
                 if (existingVideo) existingVideo.remove();
 
-                if (url.includes('.m3u8')) {
-                    // Route m3u8 streams through proxy to handle headers
+                // Check for M3U8 or TS files, or any insecure HTTP stream on this HTTPS site
+                const isM3u8 = url.includes('.m3u8');
+                const isTs = url.includes('.ts');
+                const isMpeg = url.includes('.mpeg') || url.includes('.mpg');
+                const isInsecure = url.startsWith('http:') && window.location.protocol === 'https:';
+
+                if (isM3u8 || isTs || isMpeg || isInsecure) {
+                    // Route streams through proxy to handle headers and Mixed Content
                     const proxyUrl = CONFIG.getProxyUrl(url);
 
                     // Create Video Element
@@ -179,9 +185,10 @@
                     video.style.width = '100%';
                     video.style.height = '100%';
                     video.style.backgroundColor = '#000';
+                    video.playsInline = true; // Important for mobile
                     container.appendChild(video);
 
-                    if (Hls.isSupported()) {
+                    if (isM3u8 && Hls.isSupported()) {
                         const hls = new Hls({
                             debug: false,
                             enableWorker: true,
@@ -218,11 +225,15 @@
                                 }
                             }
                         });
-                    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    } else {
+                        // For TS files or browsers with native HLS support (Safari)
+                        // Or simple proxying of insecure streams
                         video.src = proxyUrl;
+                        video.muted = true;
+                        video.play().catch(e => console.log('Autoplay blocked:', e));
                     }
                 } else {
-                    // Create Iframe
+                    // Fallback for secure iframes or other content
                     const iframe = document.createElement('iframe');
                     iframe.src = url;
                     iframe.frameBorder = '0';
