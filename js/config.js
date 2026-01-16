@@ -21,12 +21,13 @@ const CONFIG = (() => {
         isProduction: !isLocalhost,
 
         // API Endpoints
-        apiBase: isLocalhost ? 'http://localhost:3000/api/matches' : '/api/matches',
+        // API Endpoints
+        apiBase: isLocalhost ? 'http://localhost:3000/api/matches' : `${PRODUCTION_PROXY_URL}/api/matches`,
         matchesJsonUrl: isLocalhost ? null : PRODUCTION_MATCHES_URL,
 
         // Proxy URLs
         // Proxy URLs - Use Cloudflare for everything to ensure it works
-        proxyUrl: isLocalhost ? 'http://localhost:3000/proxy' : '/proxy',
+        proxyUrl: isLocalhost ? 'http://localhost:3000/proxy' : `${PRODUCTION_PROXY_URL}/proxy`,
 
         // Helper function to get proxy URL for a stream
         getProxyUrl: function (streamUrl) {
