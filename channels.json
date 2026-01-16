@@ -20,6 +20,20 @@
       "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
       "streamUrl": "https://prod-fastly-us-west-2.video.pscp.tv/Transcoding/v1/hls/mb8uoWvFhgbt9u60Z-c_Mx2d2TghCZubeEX49sfI1-ORANmzoTFcnhE5qQHc_MG0p7acY4M3ATitXiMj8-OWSg/transcode/us-west-2/periscope-replay-direct-prod-us-west-2-public/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsInZlcnNpb24iOiIyIn0.eyJFbmNvZGVyU2V0dGluZyI6ImVuY29kZXJfc2V0dGluZ18xMDgwcDMwXzEwIiwiSGVpZ2h0IjoxMDgwLCJLYnBzIjo1NTAwLCJXaWR0aCI6MTkyMH0.OImMZabKYJ0cs9CnIapU-4aBk6KNBiJxi1hh-6l4BZ4/dynamic_highlatency.m3u8?type=live",
       "id": "3"
+    },
+    {
+      "name": "beinsport 2",
+      "category": "sport",
+      "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
+      "streamUrl": "http://het135c.ycn-redirect.com/live/69854211/index.m3u8?t=_Wi7IYg8LXptXv4_8r_mOA&e=1768542141",
+      "id": "1768583541564"
+    },
+    {
+      "name": "beinsport 3",
+      "category": "sport",
+      "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRItJ0fGBMirmU-rKoUyeakFCdYvQPuPrRGiQ&s",
+      "streamUrl": "http://het126b.ycn-redirect.com/live/645587700/index.m3u8?t=XfdtWNIlyuIBRecq7nM2QQ&e=1768542162",
+      "id": "1768584281252"
     }
   ]
 }
