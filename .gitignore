@@ -1,4 +1,10 @@
 node_modules/
 .env
+*_backup_*.json
+tunnel*.txt
+tunnel*.log
+cloudflare_output.txt
+login_output.txt
+live_tunnel.txt
 *.log
 .DS_Store
