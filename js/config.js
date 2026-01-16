@@ -10,7 +10,7 @@ const CONFIG = (() => {
         window.location.protocol === 'file:';
 
     // Production proxy URL - UPDATE THIS after deploying to Render
-    const PRODUCTION_PROXY_URL = 'https://gorgeous-professional-manufacture-underground.trycloudflare.com';// Render URL
+    const PRODUCTION_PROXY_URL = 'https://monitored-executives-copyrighted-travelers.trycloudflare.com';// Render URL
 
     // Production GitHub Pages URL for matches.json
     const PRODUCTION_MATCHES_URL = 'https://ayoubalgboom-bot.github.io/brglive-website/matches.json'; // Change this
